@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vyatihar Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-2xl w-96 text-center">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">🎓 Vyatihar Login</h1>
+    <input id="username" type="text" placeholder="Enter your name" class="border p-2 w-full rounded mb-4">
+    <button onclick="login()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg w-full">Login</button>
+  </div>
+
+  <script>
+    function login() {
+      const name = document.getElementById('username').value.trim();
+      if (!name) return alert("Please enter your name!");
+      localStorage.setItem('vyatihar_user', name);
+      window.location.href = '/dashboard';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vyatihar Admin</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:40px;text-align:center}
+    h2{font-size:28px;margin-bottom:20px}
+    .btn{padding:10px 20px;border-radius:10px;border:0;font-size:16px;cursor:pointer}
+    .start{background:#e53e3e;color:white}
+    .end{background:#718096;color:white;margin-left:12px}
+  </style>
+</head>
+<body>
+  <h2>🎥 Vyatihar Teacher Control Panel</h2>
+
+  <div>
+    <button id="btnStart" class="btn start">🔴 Start Live</button>
+    <button id="btnEnd" class="btn end">⚪ End Live</button>
+  </div>
+
+  <!-- Use one module script for v9 (modular) -->
+  <script type="module">
+    // --------------- PASTE YOUR FIREBASE CONFIG BELOW ----------------
+    // Replace the placeholder values with your actual Firebase config.
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
+      authDomain: "vyatihar-live.firebaseapp.com",
+      databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
+      projectId: "vyatihar-live",
+      storageBucket: "vyatihar-live.firebasestorage.app",
+      messagingSenderId: "447656980301",
+      appId: "1:447656980301:web:bc01def31d48fb63ab5104"
+    };
+    // ------------------------------------------------------------------
+
+    // Import modular Firebase from CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    // Init Firebase
+    const app = initializeApp(FIREBASE_CONFIG);
+    const db = getDatabase(app);
+
+    // Buttons
+    const btnStart = document.getElementById('btnStart');
+    const btnEnd = document.getElementById('btnEnd');
+
+    // Start Live - writes to /live_class
+    btnStart.addEventListener('click', async () => {
+      try {
+        await set(ref(db, 'live_class'), {
+          subject: "AI & ML",
+          status: "LIVE",
+          meetLink: "https://meet.google.com/xyz",
+          timestamp: new Date().toISOString()
+        });
+        alert('✅ Class is now LIVE!');
+        console.log('live_class set => LIVE');
+      } catch (err) {
+        console.error('Error starting live:', err);
+        alert('Error: ' + err.message);
+      }
+    });
+
+    // End Live - sets status OFFLINE
+    btnEnd.addEventListener('click', async () => {
+      try {
+        await set(ref(db, 'live_class'), {
+          status: "OFFLINE",
+          timestamp: new Date().toISOString()
+        });
+        alert('🛑 Live class ended!');
+        console.log('live_class set => OFFLINE');
+      } catch (err) {
+        console.error('Error ending live:', err);
+        alert('Error: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

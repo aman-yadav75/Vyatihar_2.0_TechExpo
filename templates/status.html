@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vyatihar Live Dashboard</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
+      authDomain: "vyatihar-live.firebaseapp.com",
+      databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
+      projectId: "vyatihar-live",
+      storageBucket: "vyatihar-live.firebasestorage.app",
+      messagingSenderId: "447656980301",
+      appId: "1:447656980301:web:bc01def31d48fb63ab5104"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const subjectEl = document.getElementById("subject");
+    const statusEl = document.getElementById("status");
+    const linkEl = document.getElementById("link");
+    const timeEl = document.getElementById("time");
+
+    const liveRef = ref(db, "live_class");
+    onValue(liveRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+
+      subjectEl.textContent = data.subject || "-";
+      statusEl.textContent = data.status;
+      timeEl.textContent = data.timestamp || "-";
+      if (data.status === "LIVE") {
+        statusEl.style.color = "limegreen";
+        linkEl.innerHTML = `<a href="${data.meetLink}" target="_blank" style="color:yellow">Join Meet 🔗</a>`;
+      } else {
+        statusEl.style.color = "red";
+        linkEl.innerHTML = `<i>Class is offline</i>`;
+      }
+    });
+  </script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      background: #111827;
+      color: white;
+      padding-top: 60px;
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 40px;
+    }
+    .card {
+      margin: auto;
+      width: 320px;
+      background: #1f2937;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .label {
+      color: #9ca3af;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Vyatihar Live Dashboard</h1>
+  <div class="card">
+    <div class="label">Subject</div>
+    <div id="subject">-</div>
+
+    <div class="label">Status</div>
+    <div id="status" style="font-weight:bold;">Loading...</div>
+
+    <div class="label">Meet Link</div>
+    <div id="link"><i>Waiting...</i></div>
+
+    <div class="label">Last Updated</div>
+    <div id="time">--</div>
+  </div>
+</body>
+</html>

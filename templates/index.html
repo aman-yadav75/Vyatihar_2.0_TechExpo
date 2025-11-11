@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vyatihar - Where Ideas Meet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .loader {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* 🌙 Dark Mode Styles */
+:root {
+  color-scheme: light dark;
+}
+
+html.dark {
+  --bg-color: #0f172a;
+  --text-color: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+}
+
+html.dark body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+html.dark .glass {
+  background: var(--glass-bg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+html.dark .gradient-bg {
+  background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+}
+
+html.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+html.dark .text-gray-800 {
+  color: #f1f5f9 !important;
+}
+html.dark .bg-white {
+  background-color: #1e293b !important;
+}
+html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark .bg-purple-50,
+html.dark .bg-pink-50 {
+  background-color: #1e293b !important;
+}
+
+/* 🌙 Fix Navbar Buttons Visibility in Dark Mode */
+html.dark .nav-link {
+  color: #f1f5f9 !important; /* light gray / white */
+}
+
+html.dark .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-link {
+  color: #374151; /* normal dark gray text */
+  transition: all 0.2s ease-in-out;
+}
+
+
+/* Force dark text visibility in light mode */
+h1 span:first-child {
+  color: #1a1a1a !important;
+}
+
+html.dark h1 span:first-child {
+  color: #ffffff !important;
+}
+
+
+/* 🩵 Fix Feature Cards Visibility in Light Mode */
+.glass {
+  background: rgba(255, 255, 255, 0.92); /* bright but not flat */
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(230, 230, 230, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 🌙 Better dark mode contrast */
+html.dark .glass {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ✨ Optional – make headings always readable inside glass cards */
+.glass h3 {
+  color: #1f2937; /* dark text */
+}
+
+html.dark .glass h3 {
+  color: #f8fafc; /* white in dark mode */
+}
+
+/* 🎨 Fix Section Headings Visibility */
+h2 {
+  color: #1f2937 !important; /* dark gray in light mode */
+  transition: color 0.3s ease;
+}
+
+html.dark h2 {
+  color: #f8fafc !important; /* white in dark mode */
+}
+
+
+/* 🎓 Fix Explore Subjects Section Visibility */
+
+/* Section Title */
+h1, h2, h3 {
+  transition: color 0.3s ease;
+}
+
+#content h1,
+#content h2 {
+  color: #1f2937 !important; /* Dark gray for light mode */
+}
+
+html.dark #content h1,
+html.dark #content h2 {
+  color: #f8fafc !important; /* White for dark mode */
+}
+
+/* Subject Card Styling */
+.glass h3 {
+  color: #1f2937 !important; /* Subject name visible in light mode */
+}
+
+html.dark .glass h3 {
+  color: #f8fafc !important; /* White in dark mode */
+}
+
+/* Subject description text */
+.glass p {
+  color: #374151 !important; /* Slightly darker gray in light mode */
+}
+
+html.dark .glass p {
+  color: #cbd5e1 !important; /* Softer gray in dark mode */
+}
+
+/* Improve the light mode card background */
+#content .glass {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(229, 231, 235, 0.6);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+html.dark #content .glass {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 📊 Fix Subject Progress Visibility */
+
+/* Light mode (default) */
+.glass .text-gray-600 {
+  color: #374151 !important; /* visible dark gray for light mode */
+}
+
+/* Dark mode adjustments */
+html.dark .glass .text-gray-600 {
+  color: #e2e8f0 !important; /* light gray for dark mode */
+}
+
+/* Progress bar background fix */
+.glass .bg-gray-200 {
+  background-color: #e5e7eb !important; /* light gray bar for light mode */
+}
+
+html.dark .glass .bg-gray-200 {
+  background-color: rgba(255, 255, 255, 0.15) !important; /* subtle bar in dark mode */
+}
+
+/* Gradient bar remains same (visible in both modes) */
+.glass .gradient-bg {
+  background: linear-gradient(90deg, #7c3aed 0%, #ec4899 100%) !important;
+}
+
+/* Optional: progress text percentage color */
+.glass span.font-semibold {
+  color: #111827 !important; /* visible in light mode */
+}
+
+html.dark .glass span.font-semibold {
+  color: #f8fafc !important; /* white in dark mode */
+}
+
+
+/* 🩵 Fix Google Login Button Visibility */
+button[type="button"].w-full {
+  background-color: #f9fafb !important; /* subtle gray in light mode */
+  border: 1px solid #e5e7eb !important; /* light border */
+  color: #111827 !important; /* dark text */
+  transition: all 0.3s ease;
+}
+
+button[type="button"].w-full:hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* 🌙 Dark Mode Fix */
+html.dark button[type="button"].w-full {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #f8fafc !important;
+}
+
+html.dark button[type="button"].w-full:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Prevent content from hiding under navbar */
+body {
+  padding-top: 4.5rem; /* same height as navbar */
+}
+
+
+/* 🎨 Navbar Text Visibility Fix */
+
+/* Light mode (normal text) */
+.nav-link {
+  color: #1f2937 !important; /* Dark gray text for light mode */
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #7c3aed !important; /* purple hover effect */
+  background-color: rgba(124, 58, 237, 0.08);
+}
+
+/* 🌙 Dark mode (light text) */
+html.dark .nav-link {
+  color: #f1f5f9 !important; /* light gray text for dark mode */
+}
+
+html.dark .nav-link:hover {
+  color: #c084fc !important; /* purple hover */
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Fix brand name visibility */
+nav span.text-2xl {
+  color: #1f2937 !important;
+}
+
+html.dark nav span.text-2xl {
+  color: #ffffff !important;
+}
+
+/* 🌗 Navbar Styling */
+
+.nav-link {
+  color: #1f2937; /* light mode dark gray */
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #7c3aed; /* purple hover */
+  background-color: rgba(124, 58, 237, 0.08);
+}
+
+/* Dark Mode Navbar Links */
+html.dark .nav-link {
+  color: #f1f5f9;
+}
+
+html.dark .nav-link:hover {
+  color: #c084fc;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth shadow on scroll */
+nav.scrolled {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px);
+}
+
+/* 🌗 Navbar Colors and Links */
+
+.nav-link {
+  color: #1f2937;
+  font-weight: 500;
+  transition: all 0.25s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #7c3aed;
+  background-color: rgba(124, 58, 237, 0.08);
+}
+
+html.dark .nav-link {
+  color: #f1f5f9;
+}
+
+html.dark .nav-link:hover {
+  color: #c084fc;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 🧭 Shadow Effect on Scroll */
+nav.scrolled {
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+html.dark nav.scrolled {
+  background-color: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Prevent overlap */
+body {
+  padding-top: 4rem;
+}
+
+/* 🩵 Fix for Testimonial Cards (Light + Dark Mode) */
+.testimonial-card {
+  color: #1f2937; /* dark text in light mode */
+}
+
+.testimonial-card .user-name {
+  font-weight: 700;
+  color: #1f2937; /* dark gray for visibility */
+}
+
+html.dark .testimonial-card .user-name {
+  color: #f8fafc; /* white in dark mode */
+}
+
+html.dark .testimonial-card {
+  color: #e2e8f0; /* light text in dark mode */
+}
+
+  </style>
+
+
+  <!-- API  -->
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+  
+  <div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+  <div class="text-center">
+    <!-- Add your image here -->
+
+<img src="{{ url_for('static', filename='assets/vyatihar_logo.jpeg') }}" 
+     alt="Vyatihar Logo"
+     class="w-16 h-16 object-cover rounded-full mx-auto mb-4">
+
+    <!-- Optional loader circle -->
+    <div class="loader mx-auto mb-4 border-4 border-gray-300 border-t-purple-600 rounded-full w-10 h-10 animate-spin"></div>
+
+    <h2 class="text-2xl font-bold text-gray-800">Vyatihar</h2>
+    <p class="text-gray-600 mt-2">Loading your learning journey...</p>
+  </div>
+</div>
+
+
+ <div id="app" style="display: none;">
+<nav id="mainNav"
+  class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700
+  bg-white/70 dark:bg-[#0f172a]/70 transition-all duration-300 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+
+      <!-- 🔹 Logo -->
+      <div class="flex items-center space-x-3">
+       <img src="{{ url_for('static', filename='assets/vyatihar_logo.jpeg') }}" 
+     alt="Vyatihar Logo" 
+     class="w-16 h-16 object-cover rounded-full mx-auto mb-4">
+
+        <span class="text-2xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          Vyatihar
+        </span>
+      </div>
+
+      <!-- 🔹 Navigation Links -->
+      <div class="hidden md:flex space-x-2">
+        <button onclick="navigateTo('home')" class="nav-link px-4 py-2 rounded-lg">Home</button>
+        <button onclick="navigateTo('dashboard')" class="nav-link px-4 py-2 rounded-lg">Dashboard</button>
+        <button onclick="navigateTo('subjects')" class="nav-link px-4 py-2 rounded-lg">Subjects</button>
+        <button onclick="navigateTo('match')" class="nav-link px-4 py-2 rounded-lg">AI Match</button>
+        <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 rounded-lg">Projects</button>
+        <button onclick="navigateTo('rewards')" class="nav-link px-4 py-2 rounded-lg">Rewards</button>
+      </div>
+
+      <!-- 🔹 Right Side -->
+      <div class="flex items-center space-x-3">
+        <div id="coinDisplay" class="hidden items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full">
+          <span class="text-xl">🪙</span>
+          <span class="font-bold text-yellow-700" id="coinCount">0</span>
+        </div>
+
+        <button id="authButton" class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+          Login
+        </button>
+
+        <button id="themeToggle" class="p-2 rounded-lg text-xl hover:bg-gray-100 dark:hover:bg-white/10 transition">
+          🌙
+        </button>
+
+        <!-- Place this near your navbar (example) -->
+<button id="googleSignIn" 
+  class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+  🔐 Connect Google Drive
+</button>
+
+      </div>
+
+    </div>
+  </div>
+</nav>
+</div>
+
+
+    <main id="content" class="min-h-screen"></main>
+
+
+    <!-- 💬 Vyatihar Study Assistant -->
+<div class="max-w-3xl mx-auto mt-20 bg-white rounded-2xl shadow-lg p-8 fade-in">
+  <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+    🤖 Vyatihar Study Assistant
+  </h3>
+  <p class="text-gray-600 mb-3">Ask anything and get instant help from Vyatihar AI!</p>
+
+  <textarea id="ai-question" rows="3"
+    placeholder="Ask your question here (e.g., Explain backpropagation in simple terms)"
+    class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-purple-400 outline-none transition"></textarea>
+
+  <button onclick="askAI()" class="gradient-bg text-white px-6 py-3 rounded-lg hover:shadow-lg transition font-semibold">
+    Ask Now 💬
+  </button>
+
+  <div id="ai-answer"
+    class="mt-6 bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 whitespace-pre-wrap min-h-[80px]">
+  </div>
+</div>
+
+
+    <footer class="glass mt-12 py-8">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="text-gray-600">© 2025 Vyatihar - Where Ideas Meet. Built for Tech Expo 2025</p>
+        <p class="text-sm text-gray-500 mt-2">Empowering learners through collaboration and innovation</p>
+      </div>
+    </footer>
+  </div>
+
+      <div id="googleLoginSection" class="text-center mt-6">
+  <div id="googleLoginButton"></div>
+</div>
+
+
+<!-- 🔥 Firebase Setup -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
+  authDomain: "vyatihar-live.firebaseapp.com",
+  databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
+  projectId: "vyatihar-live",
+  storageBucket: "vyatihar-live.firebasestorage.app",
+  messagingSenderId: "447656980301",
+  appId: "1:447656980301:web:bc01def31d48fb63ab5104"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+
+
+<script>
+let audioAllowed = false;
+
+document.getElementById('enable-sound').addEventListener('click', () => {
+  audioAllowed = true;
+  alert("🔔 Sound enabled for notifications!");
+  document.getElementById('enable-sound').style.display = 'none';
+});
+
+// ✅ Firebase real-time listener
+const liveRef = firebase.database().ref("live_class");
+
+liveRef.on("value", snapshot => {
+  const data = snapshot.val();
+  if (data && data.status === "LIVE") {
+    showNotification(data);
+  }
+});
+
+function showNotification(data) {
+  if (window.alreadyNotified) return;
+  window.alreadyNotified = true;
+
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div class="fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-2xl shadow-xl z-50 animate-bounce">
+      🎥 <strong>${data.subject}</strong> class is <b>LIVE!</b><br>
+      <a href="${data.meetLink}" target="_blank" class="underline text-yellow-300">Join Now</a>
+    </div>
+  `;
+  document.body.appendChild(div);
+
+  if (audioAllowed) {
+    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    audio.play().catch(err => console.warn("⚠️ Audio play blocked:", err));
+  }
+}
+</script>
+
+
+  <script>
+    let state = {
+      currentPage: 'home',
+      isAuthenticated: false,
+      user: null,
+      coins: 0,
+     subjects: [
+  { id: 1, name: 'Finance', icon: '💰', progress: 45, students: 1234, description: 'Master financial concepts...', meetLink: 'https://meet.google.com/finance-live' },
+  { id: 2, name: 'Marketing', icon: '📊', progress: 60, students: 987, description: 'Learn digital marketing...', meetLink: 'https://meet.google.com/marketing-live' },
+  { id: 3, name: 'AI & ML', icon: '🤖', progress: 30, students: 2456, description: 'Dive into artificial intelligence...', meetLink: 'https://meet.google.com/aiml-live' },
+  { id: 4, name: 'Web Development', icon: '💻', progress: 75, students: 3421, description: 'Build modern apps...', meetLink: 'https://meet.google.com/webdev-live' },
+  { id: 5, name: 'Data Science', icon: '📈', progress: 20, students: 1876, description: 'Analyze data...', meetLink: 'https://meet.google.com/datasci-live' },
+  { id: 6, name: 'Design', icon: '🎨', progress: 55, students: 1543, description: 'Create UI/UX designs...', meetLink: 'https://meet.google.com/design-live' }
+],
+
+      projects: [],
+      matches: [
+        { id: 1, name: 'Priya Sharma', skill: 'Web Development', language: 'English, Hindi', rating: 4.8, image: '👩‍💻', bio: 'Full-stack developer passionate about teaching' },
+        { id: 2, name: 'Rahul Kumar', skill: 'Data Science', language: 'Hindi, English', rating: 4.6, image: '👨‍💼', bio: 'Data analyst with 3 years experience' },
+        { id: 3, name: 'Aisha Khan', skill: 'Marketing', language: 'English, Urdu', rating: 4.9, image: '👩‍🎓', bio: 'Digital marketing expert and mentor' },
+        { id: 4, name: 'Vikram Singh', skill: 'Finance', language: 'Hindi, English', rating: 4.7, image: '👨‍💼', bio: 'Financial analyst and investment advisor' }
+      ]
+    };
+
+    window.addEventListener('load', function() {
+  setTimeout(function() {
+    document.getElementById('preloader').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadUserData();
+
+    // 🩵 Fix: Make sure Login button works even before authentication
+    const authButton = document.getElementById('authButton');
+    authButton.addEventListener('click', function() {
+      if (!state.isAuthenticated) {
+        navigateTo('login');
+      } else {
+        logout();
+      }
+    });
+
+    navigateTo('home');
+  }, 1500);
+});
+
+
+    function loadUserData() {
+      var userData = localStorage.getItem('vyatihar_user');
+      var coins = localStorage.getItem('vyatihar_coins');
+      var projects = localStorage.getItem('vyatihar_projects');
+      
+      if (userData) {
+        state.isAuthenticated = true;
+        state.user = JSON.parse(userData);
+        state.coins = parseInt(coins || '100');
+        state.projects = JSON.parse(projects || '[]');
+        updateAuthUI();
+      }
+    }
+
+    function updateAuthUI() {
+      var authButton = document.getElementById('authButton');
+      var coinDisplay = document.getElementById('coinDisplay');
+      var coinCount = document.getElementById('coinCount');
+      
+      if (state.isAuthenticated) {
+        authButton.textContent = 'Logout';
+        authButton.onclick = logout;
+        coinDisplay.style.display = 'flex';
+        coinCount.textContent = state.coins;
+      } else {
+        authButton.textContent = 'Login';
+        authButton.onclick = function() { navigateTo('login'); };
+        coinDisplay.style.display = 'none';
+      }
+    }
+
+    function logout() {
+      state.isAuthenticated = false;
+      state.user = null;
+      localStorage.removeItem('vyatihar_user');
+      updateAuthUI();
+      navigateTo('home');
+    }
+
+    function navigateTo(page) {
+      state.currentPage = page;
+      var content = document.getElementById('content');
+      content.innerHTML = '';
+      content.className = 'min-h-screen fade-in';
+      
+      if (page === 'home') renderHome();
+      else if (page === 'login') renderLogin();
+      else if (page === 'signup') renderSignup();
+      else if (page === 'dashboard') renderDashboard();
+      else if (page === 'subjects') renderSubjects();
+      else if (page === 'match') renderMatch();
+      else if (page === 'projects') renderProjects();
+      else if (page === 'rewards') renderRewards();
+      else renderHome();
+    }
+
+    function renderHome() {
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 py-16">
+          <div class="text-center mb-20">
+            <h1 class="text-6xl font-extrabold mb-6 leading-tight">
+       <span class="text-[#1a1a1a] dark:text-white">
+           Learn Together with
+      </span>
+  <span
+    class="bg-gradient-to-r from-purple-600 via-pink-500 to-red-400
+    bg-clip-text text-transparent font-extrabold">
+    &nbsp;Vyatihar
+  </span>
+</h1>
+
+
+
+
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Where Ideas Meet & Knowledge Grows. Connect with learners and mentors worldwide through AI-powered matchmaking.
+            </p>
+            <div class="flex gap-4 justify-center">
+              <button onclick="navigateTo('signup')" class="px-8 py-4 gradient-bg text-white rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition">
+                Get Started Free
+              </button>
+              <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 bg-white text-purple-600 rounded-full text-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition">
+                Learn More
+              </button>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-6 mb-20">
+            <div class="glass rounded-2xl p-6 text-center transform hover:scale-105 transition">
+              <div class="text-4xl font-bold text-purple-600">10K+</div>
+              <div class="text-gray-600 mt-2">Active Learners</div>
+            </div>
+            <div class="glass rounded-2xl p-6 text-center transform hover:scale-105 transition">
+              <div class="text-4xl font-bold text-pink-600">500+</div>
+              <div class="text-gray-600 mt-2">Expert Mentors</div>
+            </div>
+            <div class="glass rounded-2xl p-6 text-center transform hover:scale-105 transition">
+              <div class="text-4xl font-bold text-purple-600">50+</div>
+              <div class="text-gray-600 mt-2">Subjects</div>
+            </div>
+            <div class="glass rounded-2xl p-6 text-center transform hover:scale-105 transition">
+              <div class="text-4xl font-bold text-pink-600">98%</div>
+              <div class="text-gray-600 mt-2">Satisfaction</div>
+            </div>
+          </div>
+
+          <div id="features" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12">Why Choose Vyatihar?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+              <div class="glass rounded-2xl p-8 hover:shadow-2xl transition">
+                <div class="text-5xl mb-4">🤝</div>
+                <h3 class="text-2xl font-bold mb-3">Peer Learning</h3>
+                <p class="text-gray-600">Connect with learners worldwide and grow together through collaborative learning.</p>
+              </div>
+              <div class="glass rounded-2xl p-8 hover:shadow-2xl transition">
+                <div class="text-5xl mb-4">✨</div>
+                <h3 class="text-2xl font-bold mb-3">AI Matchmaking</h3>
+                <p class="text-gray-600">Our AI finds your perfect study partner based on skills, language, and learning goals.</p>
+              </div>
+              <div class="glass rounded-2xl p-8 hover:shadow-2xl transition">
+                <div class="text-5xl mb-4">🏆</div>
+                <h3 class="text-2xl font-bold mb-3">Earn Rewards</h3>
+                <p class="text-gray-600">Get coins and badges for every achievement and contribution to the community.</p>
+              </div>
+              <div class="glass rounded-2xl p-8 hover:shadow-2xl transition">
+                <div class="text-5xl mb-4">📚</div>
+                <h3 class="text-2xl font-bold mb-3">Skill Exchange</h3>
+                <p class="text-gray-600">Teach what you know, learn what you need. Exchange skills freely.</p>
+              </div>
+              <div class="glass rounded-2xl p-8 hover:shadow-2xl transition">
+                <div class="text-5xl mb-4">💬</div>
+                <h3 class="text-2xl font-bold mb-3">24/7 Support</h3>
+                <p class="text-gray-600">Get instant help through doubt-solving sessions with mentors and peers.</p>
+              </div>
+              <div class="glass rounded-2xl p-8 hover:shadow-2xl transition">
+                <div class="text-5xl mb-4">🚀</div>
+                <h3 class="text-2xl font-bold mb-3">Project Incubation</h3>
+                <p class="text-gray-600">Pitch ideas, form teams, and bring your projects to life with mentorship.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12">What Our Users Say</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+             <div class="glass rounded-2xl p-6 testimonial-card">
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl">R</div>
+    <div>
+      <div class="user-name">Rahul Kumar</div>
+      <div class="text-sm text-gray-600 dark:text-gray-300">Student</div>
+    </div>
+  </div>
+
+                <div class="text-yellow-500 mb-2">⭐⭐⭐⭐⭐</div>
+                <p class="text-gray-600">"Vyatihar helped me find amazing study partners. The AI matching is incredibly accurate!"</p>
+              </div>
+              <div class="glass rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl">P</div>
+                  <div>
+                    <div class="font-bold">Priya Sharma</div>
+                    <div class="text-sm text-gray-600">Mentor</div>
+                  </div>
+                </div>
+                <div class="text-yellow-500 mb-2">⭐⭐⭐⭐⭐</div>
+                <p class="text-gray-600">"As a mentor, I love helping others learn. The platform makes it easy and rewarding!"</p>
+              </div>
+              <div class="glass rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl">A</div>
+                  <div>
+                    <div class="font-bold">Aisha Khan</div>
+                    <div class="text-sm text-gray-600">Professional</div>
+                  </div>
+                </div>
+                <div class="text-yellow-500 mb-2">⭐⭐⭐⭐⭐</div>
+                <p class="text-gray-600">"The gamification keeps me motivated. I've earned so many badges while learning!"</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLogin() {
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-md mx-auto px-4 py-16">
+          <div class="glass rounded-3xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+              <div class="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">V</div>
+              <h2 class="text-3xl font-bold">Welcome Back</h2>
+              <p class="text-gray-600 mt-2">Login to continue your learning journey</p>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+              <input type="email" id="loginEmail" placeholder="Email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <input type="password" id="loginPassword" placeholder="Password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <button type="submit" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
+                Log In
+              </button>
+              <div class="text-center text-gray-500">or</div>
+              <button type="button" class="w-full py-3 bg-white border-2 border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                <span>🔍</span> Continue with Google
+              </button>
+            </form>
+            <p class="text-center mt-6 text-gray-600">
+              Don't have an account? <button onclick="navigateTo('signup')" class="text-purple-600 font-semibold hover:underline">Sign up</button>
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      var email = document.getElementById('loginEmail').value;
+      var userData = {
+        name: 'Demo User',
+        email: email,
+        joinedDate: new Date().toISOString()
+      };
+      localStorage.setItem('vyatihar_user', JSON.stringify(userData));
+      localStorage.setItem('vyatihar_coins', '100');
+      state.isAuthenticated = true;
+      state.user = userData;
+      state.coins = 100;
+      updateAuthUI();
+      navigateTo('dashboard');
+    }
+
+    function renderSignup() {
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-md mx-auto px-4 py-16">
+          <div class="glass rounded-3xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-bold">Join Vyatihar</h2>
+              <p class="text-gray-600 mt-2">Create your free account</p>
+            </div>
+            <form onsubmit="handleSignup(event)" class="space-y-4">
+              <input type="text" id="signupName" placeholder="Full Name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <input type="email" id="signupEmail" placeholder="Email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <input type="tel" id="signupPhone" placeholder="Mobile Number" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <div class="grid grid-cols-2 gap-4">
+                <input type="text" id="signupState" placeholder="State" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+                <input type="text" id="signupCity" placeholder="City" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              </div>
+              <input type="password" id="signupPassword" placeholder="Password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <button type="submit" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
+                Create Account
+              </button>
+            </form>
+            <p class="text-center mt-6 text-gray-600">
+              Already have an account? <button onclick="navigateTo('login')" class="text-purple-600 font-semibold hover:underline">Log in</button>
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      var userData = {
+        name: document.getElementById('signupName').value,
+        email: document.getElementById('signupEmail').value,
+        phone: document.getElementById('signupPhone').value,
+        state: document.getElementById('signupState').value,
+        city: document.getElementById('signupCity').value,
+        joinedDate: new Date().toISOString()
+      };
+      localStorage.setItem('vyatihar_user', JSON.stringify(userData));
+      localStorage.setItem('vyatihar_coins', '100');
+      state.isAuthenticated = true;
+      state.user = userData;
+      state.coins = 100;
+      updateAuthUI();
+      navigateTo('dashboard');
+    }
+
+    function renderDashboard() {
+      if (!state.isAuthenticated) {
+        navigateTo('login');
+        return;
+      }
+
+      var subjectsHTML = '';
+      for (var i = 0; i < 3 && i < state.subjects.length; i++) {
+        var subject = state.subjects[i];
+        subjectsHTML += `
+          <div class="bg-white rounded-xl p-4 border-2 border-gray-100 hover:border-purple-300 transition cursor-pointer" onclick="navigateTo('subjects')">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="text-4xl">${subject.icon}</div>
+              <div>
+                <div class="font-bold">${subject.name}</div>
+                <div class="text-sm text-gray-600">${subject.students} students</div>
+              </div>
+            </div>
+            <div class="mb-2">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">Progress</span>
+                <span class="font-semibold">${subject.progress}%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="gradient-bg h-2 rounded-full" style="width: ${subject.progress}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 py-8">
+          <div class="mb-8">
+            <h1 class="text-4xl font-bold">Welcome back, ${state.user.name}! 👋</h1>
+            <p class="text-gray-600 mt-2">Continue your learning journey</p>
+          </div>
+
+          <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="glass rounded-2xl p-6 gradient-bg text-white">
+              <div class="text-3xl mb-2">👥</div>
+              <div class="text-3xl font-bold">1,234</div>
+              <div class="text-purple-100">Students Online</div>
+            </div>
+            <div class="glass rounded-2xl p-6 gradient-bg text-white">
+              <div class="text-3xl mb-2">📚</div>
+              <div class="text-3xl font-bold">8</div>
+              <div class="text-purple-100">Courses Joined</div>
+            </div>
+            <div class="glass rounded-2xl p-6 gradient-bg text-white">
+              <div class="text-3xl mb-2">🏆</div>
+              <div class="text-3xl font-bold">${state.coins}</div>
+              <div class="text-purple-100">Total Coins</div>
+            </div>
+            <div class="glass rounded-2xl p-6 gradient-bg text-white">
+              <div class="text-3xl mb-2">⭐</div>
+              <div class="text-3xl font-bold">5</div>
+              <div class="text-purple-100">Badges Earned</div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="glass rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                ✨ Your AI Match
+              </h3>
+              <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-4">
+                <p class="font-semibold mb-3">Suggested Study Partner:</p>
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-2xl">P</div>
+                  <div>
+                    <div class="font-bold text-lg">Priya Sharma</div>
+                    <div class="text-sm text-gray-600">Interests: AI, Web Development</div>
+                    <div class="text-sm text-yellow-600">⭐ 4.8 Rating</div>
+                  </div>
+                </div>
+                <button onclick="navigateTo('match')" class="w-full py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+                  View All Matches
+                </button>
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4">📅 Upcoming Sessions</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                  <div class="text-2xl">🤖</div>
+                  <div class="flex-1">
+                    <div class="font-semibold">ML Doubt Session</div>
+                    <div class="text-sm text-gray-600">Today, 4:00 PM</div>
+                  </div>
+                  <button class="px-3 py-1 text-sm gradient-bg text-white rounded">Join</button>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-pink-50 rounded-lg">
+                  <div class="text-2xl">💰</div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Finance Group Study</div>
+                    <div class="text-sm text-gray-600">Tomorrow, 6:00 PM</div>
+                  </div>
+                  <button class="px-3 py-1 text-sm gradient-bg text-white rounded">Join</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl p-6">
+            <h3 class="text-xl font-bold mb-4">📖 Continue Learning</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+              ${subjectsHTML}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+
+    function renderSubjects() {
+      var subjectsHTML = '';
+      for (var i = 0; i < state.subjects.length; i++) {
+        var subject = state.subjects[i];
+        subjectsHTML += `
+         <div class="glass rounded-2xl p-6 hover:shadow-2xl transition transform hover:scale-105 relative">
+  <span id="live-${subject.name}" class="absolute top-4 right-4 hidden bg-red-500 text-white text-xs px-2 py-1 rounded-full">LIVE</span>
+
+            <div class="text-5xl mb-4">${subject.icon}</div>
+            <h3 class="text-2xl font-bold mb-2">${subject.name}</h3>
+            <p class="text-gray-600 text-sm mb-4">${subject.description}</p>
+            <div class="mb-4">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-600">Progress</span>
+                <span class="font-semibold">${subject.progress}%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="gradient-bg h-2 rounded-full transition-all" style="width: ${subject.progress}%"></div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-sm text-gray-600">${subject.students} students</span>
+              <span class="text-sm font-semibold text-purple-600">View Course</span>
+            </div>
+          <div class="flex flex-col gap-3">
+  <button class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
+    Continue Learning
+  </button>
+  <button onclick="startLiveClass('${subject.name}')" 
+    class="w-full py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
+    🔴 Start Live Class
+  </button>
+    <button onclick="uploadRecording('${subject.name}')"
+    class="w-full py-2 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+    📤 Upload Recording To Drive
+  </button>
+
+</div>
+
+          </div>
+        `;
+      }
+
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 py-8">
+          <div class="mb-8">
+            <h1 class="text-4xl font-bold">Explore Subjects</h1>
+            <p class="text-gray-600 mt-2">Choose a subject to start your learning journey</p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6">
+            ${subjectsHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMatch() {
+      var matchesHTML = '';
+      for (var i = 0; i < state.matches.length; i++) {
+        var match = state.matches[i];
+        matchesHTML += `
+          <div class="glass rounded-2xl p-6 hover:shadow-xl transition">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-3xl">${match.image}</div>
+              <div class="flex-1">
+                <h3 class="text-xl font-bold">${match.name}</h3>
+                <p class="text-sm text-gray-600">${match.skill}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-yellow-500">⭐</span>
+                  <span class="text-sm font-semibold">${match.rating}</span>
+                  <span class="text-sm text-gray-600">• ${match.language}</span>
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-600 text-sm mb-4">${match.bio}</p>
+            <button onclick="connectWithMatch('${match.name}')" class="w-full py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+              Connect Now
+            </button>
+          </div>
+        `;
+      }
+
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 py-8">
+          <div class="mb-8">
+            <h1 class="text-4xl font-bold">AI Matchmaking</h1>
+            <p class="text-gray-600 mt-2">Find your perfect study partner</p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4">Filter Your Match</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+              <select class="px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
+                <option>Select Subject</option>
+                <option>Finance</option>
+                <option>Marketing</option>
+                <option>AI & ML</option>
+                <option>Web Development</option>
+                <option>Data Science</option>
+                <option>Design</option>
+              </select>
+              <select class="px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
+                <option>Preferred Language</option>
+                <option>English</option>
+                <option>Hindi</option>
+                <option>Tamil</option>
+                <option>Telugu</option>
+                <option>Marathi</option>
+              </select>
+              <select class="px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none">
+                <option>Learning Style</option>
+                <option>Visual Learner</option>
+                <option>Hands-on Practice</option>
+                <option>Discussion-based</option>
+                <option>Self-paced</option>
+              </select>
+            </div>
+            <button class="mt-4 px-6 py-3 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+              Find Matches
+            </button>
+          </div>
+
+          <h2 class="text-2xl font-bold mb-6">Recommended Matches</h2>
+          <div class="grid md:grid-cols-2 gap-6">
+            ${matchesHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    function connectWithMatch(name) {
+      alert('Connection request sent to ' + name + '! They will be notified.');
+    }
+
+    function renderProjects() {
+      var projectsHTML = '';
+      for (var i = 0; i < state.projects.length; i++) {
+        var project = state.projects[i];
+        projectsHTML += `
+          <div class="glass rounded-2xl p-6 mb-4">
+            <h3 class="text-xl font-bold mb-2">${project.title}</h3>
+            <p class="text-gray-600 mb-4">${project.description}</p>
+            <div class="flex gap-2">
+              <button class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">View Details</button>
+              <button class="px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition">Join Team</button>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 py-8">
+          <div class="mb-8">
+            <h1 class="text-4xl font-bold">Collaborative Projects</h1>
+            <p class="text-gray-600 mt-2">Pitch ideas, form teams, and build together</p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4">Create New Project</h3>
+            <form onsubmit="handleCreateProject(event)" class="space-y-4">
+              <input type="text" id="projectTitle" placeholder="Project Title" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+              <textarea id="projectDescription" placeholder="Project Description" rows="4" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"></textarea>
+              <button type="submit" class="px-6 py-3 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+                Create Project
+              </button>
+            </form>
+          </div>
+
+          <h2 class="text-2xl font-bold mb-6">Active Projects</h2>
+          ${projectsHTML.length > 0 ? projectsHTML : '<p class="text-gray-600">No projects yet. Be the first to create one!</p>'}
+        </div>
+      `;
+    }
+
+    function handleCreateProject(e) {
+      e.preventDefault();
+      var title = document.getElementById('projectTitle').value;
+      var description = document.getElementById('projectDescription').value;
+      
+      var newProject = {
+        id: Date.now(),
+        title: title,
+        description: description,
+        createdAt: new Date().toISOString()
+      };
+      
+      state.projects.push(newProject);
+      localStorage.setItem('vyatihar_projects', JSON.stringify(state.projects));
+      renderProjects();
+    }
+
+    function renderRewards() {
+      document.getElementById('content').innerHTML = `
+        <div class="max-w-7xl mx-auto px-4 py-8">
+          <div class="mb-8">
+            <h1 class="text-4xl font-bold">Rewards & Achievements</h1>
+            <p class="text-gray-600 mt-2">Track your progress and earn rewards</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="glass rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4">Your Coins</h3>
+              <div class="text-center py-8">
+                <div class="text-6xl mb-4">🪙</div>
+                <div class="text-5xl font-bold text-yellow-600 mb-2">${state.coins}</div>
+                <p class="text-gray-600">Total Coins Earned</p>
+              </div>
+              <button onclick="earnCoins()" class="w-full py-3 gradient-bg text-white rounded-lg hover:shadow-lg transition">
+                Complete Task (+10 Coins)
+              </button>
+            </div>
+
+            <div class="glass rounded-2xl p-6">
+              <h3 class="text-xl font-bold mb-4">Your Badges</h3>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl">
+                  <div class="text-4xl mb-2">🏆</div>
+                  <p class="text-xs font-semibold">Top Learner</p>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
+                  <div class="text-4xl mb-2">⭐</div>
+                  <p class="text-xs font-semibold">5-Star Helper</p>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-red-100 to-red-200 rounded-xl">
+                  <div class="text-4xl mb-2">🔥</div>
+                  <p class="text-xs font-semibold">7-Day Streak</p>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-xl">
+                  <div class="text-4xl mb-2">📚</div>
+                  <p class="text-xs font-semibold">Bookworm</p>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl">
+                  <div class="text-4xl mb-2">🤝</div>
+                  <p class="text-xs font-semibold">Team Player</p>
+                </div>
+                <div class="text-center p-4 bg-gradient-to-br from-pink-100 to-pink-200 rounded-xl">
+                  <div class="text-4xl mb-2">🎯</div>
+                  <p class="text-xs font-semibold">Goal Crusher</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl p-6 mb-8">
+            <h3 class="text-xl font-bold mb-4">Leaderboard</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-white font-bold text-xl">1</div>
+                  <div>
+                    <div class="font-bold">Rahul Kumar</div>
+                    <div class="text-sm text-gray-600">Computer Science</div>
+                  </div>
+                </div>
+                <div class="text-2xl font-bold text-yellow-600">850 🪙</div>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center text-white font-bold text-xl">2</div>
+                  <div>
+                    <div class="font-bold">Priya Sharma</div>
+                    <div class="text-sm text-gray-600">Marketing</div>
+                  </div>
+                </div>
+                <div class="text-2xl font-bold text-gray-600">720 🪙</div>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold text-xl">3</div>
+                  <div>
+                    <div class="font-bold">${state.user ? state.user.name : 'You'}</div>
+                    <div class="text-sm text-gray-600">Web Development</div>
+                  </div>
+                </div>
+                <div class="text-2xl font-bold text-orange-600">${state.coins} 🪙</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-2xl p-6">
+            <h3 class="text-xl font-bold mb-4">How to Earn Coins</h3>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="text-center p-4">
+                <div class="text-4xl mb-2">📝</div>
+                <div class="font-semibold mb-1">Complete Lessons</div>
+                <div class="text-sm text-gray-600">+5 coins per lesson</div>
+              </div>
+              <div class="text-center p-4">
+                <div class="text-4xl mb-2">🤝</div>
+                <div class="font-semibold mb-1">Help Others</div>
+                <div class="text-sm text-gray-600">+10 coins per session</div>
+              </div>
+              <div class="text-center p-4">
+                <div class="text-4xl mb-2">✅</div>
+                <div class="font-semibold mb-1">Daily Login</div>
+                <div class="text-sm text-gray-600">+2 coins per day</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function earnCoins() {
+      state.coins += 10;
+      localStorage.setItem('vyatihar_coins', state.coins.toString());
+      updateAuthUI();
+      renderRewards();
+      alert('Congratulations! You earned 10 coins! 🎉');
+    }
+    // 🌙 Dark Mode Toggle Script
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+// Load saved theme
+if (localStorage.getItem('theme') === 'dark') {
+  html.classList.add('dark');
+  themeToggle.textContent = '☀️';
+}
+
+// Listen for toggle
+themeToggle.addEventListener('click', () => {
+  if (html.classList.contains('dark')) {
+    html.classList.remove('dark');
+    localStorage.setItem('theme', 'light');
+    themeToggle.textContent = '🌙';
+  } else {
+    html.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+    themeToggle.textContent = '☀️';
+  }
+});
+
+// 🧭 Navbar scroll shadow toggle
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNav');
+  if (window.scrollY > 10) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// 🩵 GOOGLE LOGIN SETUP
+function initGoogleLogin() {
+  google.accounts.id.initialize({
+    client_id: "882114584507-jpb714h63kb2jgfkg3omq1fsjnu0a15l.apps.googleusercontent.com",
+    callback: handleGoogleLogin,
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById("googleLoginButton"),
+    { theme: "outline", size: "large" }
+  );
+}
+
+function handleGoogleLogin(response) {
+  const user = jwt_decode(response.credential);
+  console.log("Google user:", user);
+  localStorage.setItem("google_user", JSON.stringify(user));
+  alert(`Welcome ${user.name}! You can now start live classes.`);
+}
+
+window.onload = function () {
+  initGoogleLogin();
+};
+
+// Generate Google Meet Link Using Calendar API
+
+async function startLiveClass(subjectName) {
+  const token = localStorage.getItem("google_access_token");
+  if (!token) {
+    alert("Please login with Google first!");
+    return;
+  }
+
+  const event = {
+    summary: `${subjectName} Live Class`,
+    description: `Live class for ${subjectName} on Vyatihar`,
+    start: { dateTime: new Date().toISOString(), timeZone: "Asia/Kolkata" },
+    end: { dateTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(), timeZone: "Asia/Kolkata" },
+    conferenceData: { createRequest: { requestId: `meet-${Date.now()}` } },
+  };
+
+  const response = await fetch(
+    "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    }
+  );
+
+  const data = await response.json();
+  if (data.hangoutLink) {
+    alert(`Class Created! Join here:\n${data.hangoutLink}`);
+    saveClassToDrive(subjectName, data.hangoutLink);
+    document.getElementById(`live-${subjectName}`).classList.remove("hidden");
+  } else {
+    console.log(data);
+    alert("Error creating class. Try again.");
+  }
+}
+
+// Save Class Info to Google Drive
+
+async function saveClassToDrive(subject, meetLink) {
+  const token = localStorage.getItem("google_access_token");
+  const metadata = {
+    name: `${subject}-class-${new Date().toISOString().slice(0,10)}.txt`,
+    mimeType: "text/plain",
+  };
+  const file = new Blob([`Subject: ${subject}\nLink: ${meetLink}`], { type: "text/plain" });
+
+  const form = new FormData();
+  form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+  form.append("file", file);
+
+  const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+    method: "POST",
+    headers: new Headers({ Authorization: "Bearer " + token }),
+    body: form,
+  });
+
+  const data = await res.json();
+  console.log("Class saved in Drive:", data);
+}
+
+
+function startLiveClass(subjectName) {
+  const meetLinks = {
+    'Finance': 'https://meet.google.com/finance-live',
+    'Marketing': 'https://meet.google.com/marketing-live',
+    'AI & ML': 'https://meet.google.com/aiml-live',
+    'Web Development': 'https://meet.google.com/webdev-live',
+    'Data Science': 'https://meet.google.com/datasci-live',
+    'Design': 'https://meet.google.com/design-live'
+  };
+
+  const link = meetLinks[subjectName];
+  
+  if (link) {
+    // 🔴 Show "LIVE" badge dynamically on clicked subject
+    document.querySelectorAll('[id^="live-"]').forEach(el => el.classList.add('hidden'));
+    const liveTag = document.getElementById(`live-${subjectName}`);
+    if (liveTag) liveTag.classList.remove('hidden');
+
+    // Open Google Meet in a new tab
+    window.open(link, '_blank');
+  } else {
+    alert('No live class available for ' + subjectName);
+  }
+}
+
+// 🌐 GOOGLE DRIVE API SETUP
+function loadGoogleAPI() {
+  gapi.load('client:auth2', initClient);
+}
+
+function initClient() {
+  gapi.client.init({
+    apiKey: 'AIzaSyBjTJb1d46Cc1qhhhUOFa0vtQQie0R0ulU',
+    clientId: '882114584507-jpb714h63kb2jgfkg3omq1fsjnu0a15l.apps.googleusercontent.com',
+    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+    scope: 'https://www.googleapis.com/auth/drive.file'
+  }).then(() => {
+    console.log('✅ Google API Ready');
+  }, (error) => {
+    console.error('Google API Error:', error);
+  });
+}
+
+// Run this once site loads
+window.onload = loadGoogleAPI;
+
+// Add Function to Upload File to Drive
+
+async function uploadRecording(subjectName) {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'video/*';
+
+  fileInput.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const metadata = {
+      name: `${subjectName}_Class_${new Date().toISOString().split('T')[0]}.mp4`,
+      mimeType: file.type
+    };
+
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', file);
+
+    const token = gapi.auth.getToken().access_token;
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: new Headers({ 'Authorization': 'Bearer ' + token }),
+      body: form
+    });
+
+    const data = await res.json();
+    alert(`✅ Recording uploaded successfully to Drive!\nFile ID: ${data.id}`);
+  };
+
+  fileInput.click();
+}
+
+
+// ---------- Google Drive init ----------
+function loadGoogleAPI() {
+  // loads gapi libs
+  gapi.load('client:auth2', initClient);
+}
+
+function initClient() {
+  gapi.client.init({
+    apiKey: "AIzaSyBjTJb1d46Cc1qhhhUOFa0vtQQie0R0ulU",
+    clientId: "882114584507-jpb714h63kb2jgfkg3omq1fsjnu0a15l.apps.googleusercontent.com",
+    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
+    scope: 'https://www.googleapis.com/auth/drive.file'
+  }).then(() => {
+    console.log('Google API initialized');
+  }).catch(err => {
+    console.error('gapi init error', err);
+  });
+}
+
+// call loader after page load (safe if you already have window.onload)
+window.addEventListener('load', loadGoogleAPI);
+
+// ---------- Sign in handler (connect Drive) ----------
+async function handleGoogleSignIn() {
+  try {
+    const auth = gapi.auth2.getAuthInstance();
+    if (!auth) {
+      alert('Google API not ready yet — refresh the page and try again.');
+      return;
+    }
+    await auth.signIn(); // shows consent prompt
+    const user = auth.currentUser.get();
+    const token = user.getAuthResponse().access_token;
+    if (token) {
+      alert('✅ Google Drive connected successfully!');
+    } else {
+      alert('⚠️ Could not get token. Try again.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Sign-in failed. Check console for details.');
+  }
+}
+
+// attach to button (make sure button exists in DOM)
+document.addEventListener('DOMContentLoaded', () => {
+  const signBtn = document.getElementById('googleSignIn');
+  if (signBtn) signBtn.addEventListener('click', handleGoogleSignIn);
+});
+
+
+// ---------- Upload recording to Drive ----------
+async function uploadRecording(subjectName) {
+  const auth = gapi.auth2 && gapi.auth2.getAuthInstance();
+  if (!auth || !auth.isSignedIn.get()) {
+    alert('Please connect your Google Drive first (🔐 Connect Google Drive).');
+    return;
+  }
+
+  // choose file
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'video/*';
+
+  fileInput.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // metadata
+    const metadata = {
+      name: `${subjectName}_Class_${new Date().toISOString().slice(0,10)}${file.name.substring(file.name.lastIndexOf('.'))}`,
+      mimeType: file.type
+    };
+
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', file);
+
+    try {
+      const token = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+      const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        method: 'POST',
+        headers: new Headers({ 'Authorization': 'Bearer ' + token }),
+        body: form
+      });
+      const data = await res.json();
+      if (data && data.id) {
+        alert(`✅ Recording uploaded! File ID: ${data.id}`);
+      } else {
+        console.error('Drive upload response', data);
+        alert('❌ Upload failed — check console for details.');
+      }
+    } catch (err) {
+      console.error('Upload error', err);
+      alert('Upload error — check console for details.');
+    }
+  };
+
+  fileInput.click();
+}
+
+
+  </script>
+<!-- 🔊 Enable Sound Button -->
+<button id="enable-sound" 
+  class="fixed bottom-5 right-5 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700">
+  🔊 Enable Sound Alerts
+</button>
+
+<script>
+let audioAllowed = false;
+
+// ✅ When user clicks enable sound button
+document.getElementById('enable-sound').addEventListener('click', () => {
+  audioAllowed = true;
+  alert("🔔 Sound enabled for notifications!");
+  document.getElementById('enable-sound').style.display = 'none';
+});
+
+// ✅ Live class checker
+async function checkLiveClass() {
+  try {
+    const res = await fetch('/live_class');
+    const data = await res.json();
+
+    console.log("🔍 Checking Live Status:", data);
+
+    if (data.status === "LIVE") {
+      showNotification(data);
+    }
+  } catch (err) {
+    console.error("❌ Error fetching live class:", err);
+  }
+}
+
+function showNotification(data) {
+  if (window.alreadyNotified) return;
+  window.alreadyNotified = true;
+
+  const div = document.createElement('div');
+  div.innerHTML = `
+    <div class="fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-2xl shadow-xl z-50 animate-bounce">
+      🎥 <strong>${data.subject}</strong> class is <b>LIVE!</b><br>
+      <a href="${data.meetLink}" target="_blank" class="underline text-yellow-300">Join Now</a>
+    </div>
+  `;
+  document.body.appendChild(div);
+
+  // 🔊 Play alert sound only if allowed
+  if (audioAllowed) {
+    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    audio.play().catch(err => console.warn("⚠️ Audio play blocked:", err));
+  } else {
+    console.log("🔇 Sound disabled until you click 'Enable Sound Alerts'");
+  }
+}
+
+// 🔁 Check every 10 seconds
+setInterval(checkLiveClass, 10000);
+checkLiveClass();
+</script>
+
+
+
+<!-- 🔔 Realtime Live Class Listener -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  // Firebase Config (same as admin.html)
+  const firebaseConfig = {
+    apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
+    authDomain: "vyatihar-live.firebaseapp.com",
+    databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
+    projectId: "vyatihar-live",
+    storageBucket: "vyatihar-live.firebasestorage.app",
+    messagingSenderId: "447656980301",
+    appId: "1:447656980301:web:bc01def31d48fb63ab5104"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 🔊 Ask for sound permission once
+  let soundEnabled = false;
+  document.addEventListener('click', () => {
+    soundEnabled = true;
+  });
+
+  // 🔁 Listen to Firebase for live_class changes
+  const liveRef = ref(db, "live_class");
+  onValue(liveRef, (snapshot) => {
+    const data = snapshot.val();
+    console.log("🎥 Realtime Update:", data);
+
+    if (data && data.status === "LIVE") {
+      showLiveNotification(data);
+    }
+  });
+
+  // 🎯 Show popup + play sound
+  function showLiveNotification(data) {
+    if (window.alreadyShown) return;
+    window.alreadyShown = true;
+
+    const popup = document.createElement("div");
+    popup.innerHTML = `
+      <div style="position:fixed;top:20px;right:20px;background:#10B981;color:white;
+        padding:15px 25px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.3);
+        font-size:16px;z-index:1000;">
+        🎥 <b>${data.subject}</b> class is <b>LIVE!</b><br>
+        <a href="${data.meetLink}" target="_blank" style="color:yellow;text-decoration:underline;">Join Now</a>
+      </div>
+    `;
+    document.body.appendChild(popup);
+
+    if (soundEnabled) {
+      const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+      beep.play().catch(e => console.log("Sound blocked until click"));
+    } else {
+      console.log("🔇 Click once anywhere to enable sound.");
+    }
+  }
+</script>
+
+
+<!-- 🔹 AI Assistant JS -->
+<script>
+async function askAI() {
+  const question = document.getElementById("ai-question").value.trim();
+  const answerBox = document.getElementById("ai-answer");
+  if (!question) return alert("Please type a question!");
+
+  answerBox.innerText = "⏳ Thinking...";
+
+  try {
+    const res = await fetch("/ask_ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question })
+    });
+    const data = await res.json();
+    if (data.answer) {
+      answerBox.innerText = "💡 " + data.answer;
+    } else {
+      answerBox.innerText = "❌ Error: " + (data.error || "No response");
+    }
+  } catch (err) {
+    answerBox.innerText = "⚠️ Network error, please retry.";
+  }
+}
+</script>
+
+
+
+</body>
+</html>
