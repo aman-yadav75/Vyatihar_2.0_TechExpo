@@ -1,158 +1,111 @@
-# from flask import Flask, render_template, send_from_directory, request, jsonify
-# import os
-# from werkzeug.utils import secure_filename
-# import google.generativeai as genai
-
-# # ✅ Base paths
-# BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-# TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-# STATIC_DIR = os.path.join(BASE_DIR, 'static')
-
-# # ✅ Flask app setup
-# app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
-
-# # ✅ Gemini API Key (replace with your own key)
-# genai.configure(api_key="AIzaSyAexFGgmt_7ybToirJ_oI4MXwADkcbTqlA")
-
-# # ===========================
-# # 🌐 PAGE ROUTES
-# # ===========================
-
-# @app.route('/')
-# def home():
-#     try:
-#         return render_template('index.html')
-#     except Exception as e:
-#         return f"<h2 style='color:red;'>Template Error:</h2><pre>{e}</pre>"
-
-# @app.route('/static/<path:filename>')
-# def serve_static(filename):
-#     return send_from_directory(STATIC_DIR, filename)
-
-# @app.route('/admin')
-# def admin_page():
-#     return render_template('admin.html')
-
-# @app.route('/status')
-# def live_status():
-#     return render_template('status.html')
-
-# @app.route('/dashboard')
-# def dashboard():
-#     return render_template('dashboard.html')
-
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
-
-# # ===========================
-# # 🧠 AI ASSISTANT ROUTE (GEMINI)
-# # ===========================
-
-# @app.route('/ask_ai', methods=['POST'])
-# def ask_ai():
-#     from google.generativeai import GenerativeModel
-
-#     try:
-#         data = request.get_json()
-#         question = data.get("question", "")
-#         if not question:
-#             return jsonify({"error": "No question provided"}), 400
-
-#         # 🧠 Use correct Gemini model name for v1beta
-#         model = GenerativeModel("gemini-2.5-pro")
-#         response = model.generate_content([question])
-
-#         return jsonify({"answer": response.text})
-
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-
-
-# # ===========================
-# # 🎥 LIVE CLASS STATUS
-# # ===========================
-
-# @app.route("/live_class", methods=["GET"])
-# def get_live_class():
-#     data = {
-#         "subject": "AI & ML",
-#         "status": "LIVE",
-#         "meetLink": "https://meet.google.com/xyz",
-#         "timestamp": "2025-11-11T14:30:00"
-#     }
-#     return jsonify(data)
-
-# # ===========================
-# # 📄 NOTES UPLOAD
-# # ===========================
-
-# UPLOAD_FOLDER = os.path.join(BASE_DIR, 'documents')
-# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-# @app.route('/upload_note', methods=['POST'])
-# def upload_note():
-#     file = request.files.get('note')
-#     if not file:
-#         return "No file uploaded", 400
-#     filename = secure_filename(file.filename)
-#     file.save(os.path.join(UPLOAD_FOLDER, filename))
-#     return f"<h3>✅ Note uploaded successfully: {filename}</h3><a href='/dashboard'>Go Back</a>"
-
-# # ===========================
-# # 🚀 START SERVER
-# # ===========================
-
-# if __name__ == '__main__':
-#     print("📂 BASE_DIR:", BASE_DIR)
-#     print("📂 TEMPLATE_DIR:", TEMPLATE_DIR)
-#     print("📂 STATIC_DIR:", STATIC_DIR)
-#     print("🚀 Flask server started: http://127.0.0.1:5000")
-#     app.run(debug=True)
-
-
-
-
-
-# api/index.py
-from flask import Flask, render_template, send_from_directory, jsonify, request
+from flask import Flask, render_template, send_from_directory, request, jsonify
 import os
+from werkzeug.utils import secure_filename
+import google.generativeai as genai
 
+# ==================================
+# 📁 PATH SETUP
+# ==================================
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'documents')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# ==================================
+# 🚀 FLASK SETUP
+# ==================================
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 
-# Homepage
+# ==================================
+# 🔑 GEMINI API KEY (replace with yours)
+# ==================================
+genai.configure(api_key="AIzaSyAexFGgmt_7ybToirJ_oI4MXwADkcbTqlA")
+
+# ==================================
+# 🌍 PAGE ROUTES
+# ==================================
 @app.route('/')
 def home():
-    return render_template('index.html')
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        return f"<h2 style='color:red;'>Template Error:</h2><pre>{e}</pre>"
 
-# Serve static (Flask already does but keep in case)
+@app.route('/admin')
+def admin_page():
+    return render_template('admin.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/status')
+def live_status():
+    return render_template('status.html')
+
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory(STATIC_DIR, filename)
 
-# Simple API for live status (demo)
-@app.route('/live_class', methods=['GET'])
-def live_class():
-    return jsonify({
+# ==================================
+# 🧠 AI STUDY ASSISTANT (GEMINI)
+# ==================================
+@app.route('/ask_ai', methods=['POST'])
+def ask_ai():
+    try:
+        data = request.get_json()
+        question = data.get("question", "").strip()
+        if not question:
+            return jsonify({"error": "No question provided"}), 400
+
+        # ✅ Correct, available Gemini model
+        model = genai.GenerativeModel("gemini-1.5-pro")
+
+        # Generate answer
+        response = model.generate_content(question)
+        answer = getattr(response, "text", "⚠️ No response text available")
+
+        return jsonify({"answer": answer})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ==================================
+# 🎥 LIVE CLASS ENDPOINT
+# ==================================
+@app.route("/live_class", methods=["GET"])
+def get_live_class():
+    data = {
         "subject": "AI & ML",
         "status": "LIVE",
         "meetLink": "https://meet.google.com/xyz",
         "timestamp": "2025-11-11T14:30:00"
-    })
+    }
+    return jsonify(data)
 
-# A simple AI endpoint placeholder (you will add keys)
-@app.route('/ask_ai', methods=['POST'])
-def ask_ai():
-    data = request.get_json() or {}
-    question = data.get('question', '')
-    # Replace with your AI logic / keys later
-    return jsonify({"answer": f"You asked: {question}"})
+# ==================================
+# 📄 NOTES UPLOAD
+# ==================================
+@app.route('/upload_note', methods=['POST'])
+def upload_note():
+    file = request.files.get('note')
+    if not file:
+        return "No file uploaded", 400
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(UPLOAD_FOLDER, filename))
+    return f"<h3>✅ Note uploaded successfully: {filename}</h3><a href='/dashboard'>Go Back</a>"
 
-if __name__ == "__main__":
-    # For local dev only
+# ==================================
+# 🏁 START SERVER
+# ==================================
+if __name__ == '__main__':
+    print("📂 BASE_DIR:", BASE_DIR)
+    print("📂 TEMPLATE_DIR:", TEMPLATE_DIR)
+    print("📂 STATIC_DIR:", STATIC_DIR)
+    print("🚀 Flask server started: http://127.0.0.1:5000")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
