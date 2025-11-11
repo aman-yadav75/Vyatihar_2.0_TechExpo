@@ -64,7 +64,7 @@ def ask_ai():
             return jsonify({"error": "No question provided"}), 400
 
         # ✅ Correct, available Gemini model
-        model = genai.GenerativeModel("gemini-1.5-pro")
+        model = genai.GenerativeModel("gemini-1.5-flash")
 
         # Generate answer
         response = model.generate_content(question)
