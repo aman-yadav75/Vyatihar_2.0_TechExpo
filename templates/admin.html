@@ -1,30 +1,18 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vyatihar Admin</title>
-  <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:40px;text-align:center}
-    h2{font-size:28px;margin-bottom:20px}
-    .btn{padding:10px 20px;border-radius:10px;border:0;font-size:16px;cursor:pointer}
-    .start{background:#e53e3e;color:white}
-    .end{background:#718096;color:white;margin-left:12px}
-  </style>
-</head>
-<body>
-  <h2>🎥 Vyatihar Teacher Control Panel</h2>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <div>
-    <button id="btnStart" class="btn start">🔴 Start Live</button>
-    <button id="btnEnd" class="btn end">⚪ End Live</button>
-  </div>
-
-  <!-- Use one module script for v9 (modular) -->
+  <!-- Firebase Admin Logic -->
   <script type="module">
-    // --------------- PASTE YOUR FIREBASE CONFIG BELOW ----------------
-    // Replace the placeholder values with your actual Firebase config.
-    const FIREBASE_CONFIG = {
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    // 🔥 Replace this config with your Firebase details
+    const firebaseConfig = {
       apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
       authDomain: "vyatihar-live.firebaseapp.com",
       databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
@@ -33,51 +21,150 @@
       messagingSenderId: "447656980301",
       appId: "1:447656980301:web:bc01def31d48fb63ab5104"
     };
-    // ------------------------------------------------------------------
 
-    // Import modular Firebase from CDN
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-    // Init Firebase
-    const app = initializeApp(FIREBASE_CONFIG);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Buttons
-    const btnStart = document.getElementById('btnStart');
-    const btnEnd = document.getElementById('btnEnd');
+    // 🎥 Start Live Class
+    function startLive() {
+      set(ref(db, "live_class"), {
+        subject: "AI & ML",
+        status: "LIVE",
+        meetLink: "https://meet.google.com/xyz",
+        timestamp: new Date().toISOString()
+      });
+      alert("🎥 Live class started!");
+    }
 
-    // Start Live - writes to /live_class
-    btnStart.addEventListener('click', async () => {
-      try {
-        await set(ref(db, 'live_class'), {
-          subject: "AI & ML",
-          status: "LIVE",
-          meetLink: "https://meet.google.com/xyz",
-          timestamp: new Date().toISOString()
-        });
-        alert('✅ Class is now LIVE!');
-        console.log('live_class set => LIVE');
-      } catch (err) {
-        console.error('Error starting live:', err);
-        alert('Error: ' + err.message);
-      }
-    });
+    // 🛑 End Live Class
+    function endLive() {
+      set(ref(db, "live_class"), { status: "OFFLINE" });
+      alert("🛑 Live class ended!");
+    }
 
-    // End Live - sets status OFFLINE
-    btnEnd.addEventListener('click', async () => {
-      try {
-        await set(ref(db, 'live_class'), {
-          status: "OFFLINE",
-          timestamp: new Date().toISOString()
-        });
-        alert('🛑 Live class ended!');
-        console.log('live_class set => OFFLINE');
-      } catch (err) {
-        console.error('Error ending live:', err);
-        alert('Error: ' + err.message);
+    // 📢 Post an Announcement
+    function postAnnouncement() {
+      const msg = document.getElementById("announcement").value.trim();
+      if (!msg) {
+        alert("⚠️ Please write something first!");
+        return;
       }
-    });
+
+      const annRef = ref(db, "announcements");
+      push(annRef, {
+        message: msg,
+        created_at: new Date().toISOString()
+      });
+
+      alert("📢 Announcement sent!");
+      document.getElementById("announcement").value = "";
+    }
+
+    // Expose functions globally
+    window.startLive = startLive;
+    window.endLive = endLive;
+    window.postAnnouncement = postAnnouncement;
+  </script>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+  <h1 class="text-3xl font-bold mb-8">🎥 Vyatihar Teacher Control Panel</h1>
+
+  <!-- 🎯 Live Class Controls -->
+  <div class="bg-white shadow-lg rounded-xl p-6 w-[400px] mb-10 border-t-4 border-red-600">
+    <h2 class="text-xl font-semibold mb-4">🎬 Start / End Live Class</h2>
+    <input
+      type="text"
+      id="meet-link"
+      placeholder="Paste Google Meet link here..."
+      class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-red-400 outline-none"
+    />
+    <button
+      onclick="startLive()"
+      class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow-md w-full mb-2"
+    >
+      🔴 Start Live
+    </button>
+    <button
+      onclick="endLive()"
+      class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg shadow-md w-full"
+    >
+      ⚪ End Live
+    </button>
+  </div>
+
+  <!-- 📢 Announcement Section -->
+  <div class="bg-white shadow-xl rounded-xl p-6 w-[400px] border-t-4 border-blue-600">
+    <h2 class="text-xl font-semibold mb-4">📢 Make an Announcement</h2>
+    <textarea
+      id="announcement"
+      class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
+      rows="3"
+      placeholder="Type your message here..."
+    ></textarea>
+    <button
+      onclick="postAnnouncement()"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md w-full"
+    >
+      📤 Post Announcement
+    </button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    // 🔥 Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
+      authDomain: "vyatihar-live.firebaseapp.com",
+      databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
+      projectId: "vyatihar-live",
+      storageBucket: "vyatihar-live.firebasestorage.app",
+      messagingSenderId: "447656980301",
+      appId: "1:447656980301:web:bc01def31d48fb63ab5104"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // 🎥 Start Live Class with Meet link
+    window.startLive = function () {
+      const link = document.getElementById("meet-link").value.trim();
+      if (!link || !link.startsWith("https://meet.google.com/")) {
+        alert("⚠️ Please enter a valid Google Meet link!");
+        return;
+      }
+      set(ref(db, "live_class"), {
+        subject: "AI & ML",
+        status: "LIVE",
+        meetLink: link,
+        timestamp: new Date().toISOString(),
+      });
+      alert("✅ Live class started successfully!");
+      document.getElementById("meet-link").value = "";
+    };
+
+    // 🛑 End Live
+    window.endLive = function () {
+      set(ref(db, "live_class"), { status: "OFFLINE" });
+      alert("🛑 Live class ended!");
+    };
+
+    // 📢 Announcement post (unchanged)
+    window.postAnnouncement = function () {
+      const msg = document.getElementById("announcement").value.trim();
+      if (!msg) {
+        alert("⚠️ Please write something first!");
+        return;
+      }
+      const annRef = ref(db, "announcements");
+      push(annRef, { message: msg, created_at: new Date().toISOString() });
+      alert("📢 Announcement sent!");
+      document.getElementById("announcement").value = "";
+    };
   </script>
 </body>
+
 </html>

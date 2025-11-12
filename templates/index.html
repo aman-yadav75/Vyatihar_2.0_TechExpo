@@ -441,11 +441,13 @@ html.dark .testimonial-card {
       <!-- 🔹 Navigation Links -->
       <div class="hidden md:flex space-x-2">
         <button onclick="navigateTo('home')" class="nav-link px-4 py-2 rounded-lg">Home</button>
-        <button onclick="navigateTo('dashboard')" class="nav-link px-4 py-2 rounded-lg">Dashboard</button>
+       <a href="{{ url_for('dashboard') }}" class="nav-link px-4 py-2 rounded-lg">Dashboard</a>
         <button onclick="navigateTo('subjects')" class="nav-link px-4 py-2 rounded-lg">Subjects</button>
         <button onclick="navigateTo('match')" class="nav-link px-4 py-2 rounded-lg">AI Match</button>
         <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 rounded-lg">Projects</button>
         <button onclick="navigateTo('rewards')" class="nav-link px-4 py-2 rounded-lg">Rewards</button>
+        <a href="/admin" class="text-purple-600 hover:text-purple-800 font-semibold">Admin Panel</a>
+
       </div>
 
       <!-- 🔹 Right Side -->
@@ -512,6 +514,8 @@ html.dark .testimonial-card {
       <div id="googleLoginSection" class="text-center mt-6">
   <div id="googleLoginButton"></div>
 </div>
+
+
 
 
 <!-- 🔥 Firebase Setup -->
@@ -1777,6 +1781,14 @@ async function askAI() {
 }
 </script>
 
+<script>
+  // 🏠 Auto-load Home section when site first opens
+  document.addEventListener("DOMContentLoaded", () => {
+    if (typeof navigateTo === "function") {
+      navigateTo('home');
+    }
+  });
+</script>
 
 
 </body>

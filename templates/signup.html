@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Vyatihar</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup | Vyatihar</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 min-h-screen flex items-center justify-center">
   <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-    <h2 class="text-3xl font-bold text-center text-purple-700 mb-6">👋 Welcome Back</h2>
+    <h2 class="text-3xl font-bold text-center text-purple-700 mb-6">✨ Create Account</h2>
+    
+    <form method="POST" action="/signup" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <input type="text" name="username" required
+          class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-purple-400 outline-none" />
+      </div>
 
-    <form method="POST" action="/login" class="space-y-5">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
         <input type="email" name="email" required
@@ -25,13 +31,13 @@
 
       <button type="submit"
         class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition">
-        🔐 Login
+        🚀 Sign Up
       </button>
     </form>
 
     <p class="text-center text-gray-600 mt-6 text-sm">
-      Don’t have an account?
-      <a href="/signup" class="text-purple-600 hover:underline font-medium">Sign Up</a>
+      Already have an account? 
+      <a href="/login" class="text-purple-600 hover:underline font-medium">Login</a>
     </p>
   </div>
 </body>
