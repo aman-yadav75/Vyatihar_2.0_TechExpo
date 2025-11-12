@@ -20,7 +20,7 @@ app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 # ==================================
 # 🔑 GEMINI API KEY (replace with yours)
 # ==================================
-genai.configure(api_key="AIzaSyAexFGgmt_7ybToirJ_oI4MXwADkcbTqlA")
+genai.configure(api_key="AIzaSyCSVU8XDYfcvr7hzre15llP8mG6C9Bzsec")
 
 # ==================================
 # 🌍 PAGE ROUTES
@@ -63,10 +63,16 @@ def ask_ai():
         if not question:
             return jsonify({"error": "No question provided"}), 400
 
-        # ✅ Correct, available Gemini model
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        # 🧠 Automatically choose any working Gemini text model
+        available_models = [m.name for m in genai.list_models() if "generateContent" in m.supported_generation_methods]
+        if not available_models:
+            return jsonify({"error": "No supported Gemini model found!"}), 500
 
-        # Generate answer
+        # Pick the first available one (usually gemini-1.5-flash or gemini-pro)
+        model_name = available_models[0]
+        print(f"✅ Using model: {model_name}")
+
+        model = genai.GenerativeModel(model_name)
         response = model.generate_content(question)
         answer = getattr(response, "text", "⚠️ No response text available")
 
@@ -74,6 +80,9 @@ def ask_ai():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
 
 # ==================================
 # 🎥 LIVE CLASS ENDPOINT
@@ -107,5 +116,5 @@ if __name__ == '__main__':
     print("📂 BASE_DIR:", BASE_DIR)
     print("📂 TEMPLATE_DIR:", TEMPLATE_DIR)
     print("📂 STATIC_DIR:", STATIC_DIR)
-    print("🚀 Flask server started: http://127.0.0.1:5000")
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+    print("🚀 Flask server started: http://127.0.0.1:5001")
+    app.run(host="0.0.0.0", port=5001, debug=True)
