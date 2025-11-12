@@ -113,8 +113,9 @@ def upload_note():
 # 🏁 START SERVER
 # ==================================
 if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))  # ✅ Use Render’s dynamic port
     print("📂 BASE_DIR:", BASE_DIR)
     print("📂 TEMPLATE_DIR:", TEMPLATE_DIR)
     print("📂 STATIC_DIR:", STATIC_DIR)
-    print("🚀 Flask server started: http://127.0.0.1:5001")
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    print(f"🚀 Flask server started on port {port}")
+    app.run(host="0.0.0.0", port=port, debug=False)
