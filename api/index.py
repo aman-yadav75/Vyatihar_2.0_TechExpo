@@ -117,9 +117,8 @@ if __name__ == '__main__':
     print("📂 BASE_DIR:", BASE_DIR)
     print("📂 TEMPLATE_DIR:", TEMPLATE_DIR)
     print("📂 STATIC_DIR:", STATIC_DIR)
-    print(f"🚀 Flask server started on port {port}")
+    print(f"🚀 Flask server starting on port {port}...")
 
-    # ✅ Only run Flask dev server locally, not on Render
+    # ✅ Only run Flask dev server locally
     if os.environ.get("RENDER") is None:
         app.run(host="0.0.0.0", port=port, debug=True)
-
