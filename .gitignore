@@ -14,3 +14,4 @@ users.db
 
 # Mac files
 .DS_Store
+instance/
