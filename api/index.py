@@ -26,11 +26,19 @@ app.permanent_session_lifetime = timedelta(days=7)
 
 
 
+
+# ⚙️ DATABASE SETUP (safe for Render / local)
 # ==================================
-# ⚙️ DATABASE SETUP
-# ==================================
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///instance/users.db"
+# Make sure 'instance' folder exists so sqlite can create the DB file inside it
+INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
+os.makedirs(INSTANCE_DIR, exist_ok=True)   # <-- creates folder if missing
+
+# Use an absolute path for sqlite DB file to avoid "unable to open database file"
+DB_PATH = os.path.join(INSTANCE_DIR, "users.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + DB_PATH
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# init DB + bcrypt
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
@@ -309,9 +317,19 @@ def upload_note():
     file.save(os.path.join(UPLOAD_FOLDER, filename))
     return f"<h3>✅ Note uploaded successfully: {filename}</h3><a href='/dashboard'>Go Back</a>"
 
+# ==============================
+# 🛠️ AUTO CREATE DB ON STARTUP (FIRST)
+# ==============================
+with app.app_context():
+    try:
+        db.create_all()
+        print("✅ Database created / exists")
+    except Exception as e:
+        print("❌ DB creation error:", e)
+
 
 # ==============================
-# 👑 AUTO CREATE ADMIN (Once)
+# 👑 AUTO CREATE ADMIN (SECOND)
 # ==============================
 with app.app_context():
     existing_admin = User.query.filter_by(email="admin@vyatihar.com").first()
@@ -326,20 +344,10 @@ with app.app_context():
         )
         db.session.add(admin)
         db.session.commit()
-        print("👑 Admin user created automatically!")
+        print("👑 Auto-created Admin!")
     else:
         print("👑 Admin already exists")
 
-
-# ==============================
-# 🛠️ AUTO CREATE DB ON STARTUP
-# ==============================
-with app.app_context():
-    try:
-        db.create_all()
-        print("✅ Database tables ensured (Render OK)")
-    except Exception as e:
-        print("❌ DB Error:", e)
 
 
 # ==================================
