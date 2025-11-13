@@ -1,0 +1,16 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore database
+instance/
+users.db
+
+# Ignore environment
+.env
+
+# VSCode
+.vscode/
+
+# Mac files
+.DS_Store

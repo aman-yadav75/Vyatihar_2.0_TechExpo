@@ -11,111 +11,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-    // 🔥 Replace this config with your Firebase details
-    const firebaseConfig = {
-      apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
-      authDomain: "vyatihar-live.firebaseapp.com",
-      databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
-      projectId: "vyatihar-live",
-      storageBucket: "vyatihar-live.firebasestorage.app",
-      messagingSenderId: "447656980301",
-      appId: "1:447656980301:web:bc01def31d48fb63ab5104"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // 🎥 Start Live Class
-    function startLive() {
-      set(ref(db, "live_class"), {
-        subject: "AI & ML",
-        status: "LIVE",
-        meetLink: "https://meet.google.com/xyz",
-        timestamp: new Date().toISOString()
-      });
-      alert("🎥 Live class started!");
-    }
-
-    // 🛑 End Live Class
-    function endLive() {
-      set(ref(db, "live_class"), { status: "OFFLINE" });
-      alert("🛑 Live class ended!");
-    }
-
-    // 📢 Post an Announcement
-    function postAnnouncement() {
-      const msg = document.getElementById("announcement").value.trim();
-      if (!msg) {
-        alert("⚠️ Please write something first!");
-        return;
-      }
-
-      const annRef = ref(db, "announcements");
-      push(annRef, {
-        message: msg,
-        created_at: new Date().toISOString()
-      });
-
-      alert("📢 Announcement sent!");
-      document.getElementById("announcement").value = "";
-    }
-
-    // Expose functions globally
-    window.startLive = startLive;
-    window.endLive = endLive;
-    window.postAnnouncement = postAnnouncement;
-  </script>
-</head>
-
-<body class="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
-  <h1 class="text-3xl font-bold mb-8">🎥 Vyatihar Teacher Control Panel</h1>
-
-  <!-- 🎯 Live Class Controls -->
-  <div class="bg-white shadow-lg rounded-xl p-6 w-[400px] mb-10 border-t-4 border-red-600">
-    <h2 class="text-xl font-semibold mb-4">🎬 Start / End Live Class</h2>
-    <input
-      type="text"
-      id="meet-link"
-      placeholder="Paste Google Meet link here..."
-      class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-red-400 outline-none"
-    />
-    <button
-      onclick="startLive()"
-      class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg shadow-md w-full mb-2"
-    >
-      🔴 Start Live
-    </button>
-    <button
-      onclick="endLive()"
-      class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg shadow-md w-full"
-    >
-      ⚪ End Live
-    </button>
-  </div>
-
-  <!-- 📢 Announcement Section -->
-  <div class="bg-white shadow-xl rounded-xl p-6 w-[400px] border-t-4 border-blue-600">
-    <h2 class="text-xl font-semibold mb-4">📢 Make an Announcement</h2>
-    <textarea
-      id="announcement"
-      class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-blue-400 outline-none"
-      rows="3"
-      placeholder="Type your message here..."
-    ></textarea>
-    <button
-      onclick="postAnnouncement()"
-      class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-md w-full"
-    >
-      📤 Post Announcement
-    </button>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-    // 🔥 Replace with your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
       authDomain: "vyatihar-live.firebaseapp.com",
@@ -129,7 +24,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // 🎥 Start Live Class with Meet link
     window.startLive = function () {
       const link = document.getElementById("meet-link").value.trim();
       if (!link || !link.startsWith("https://meet.google.com/")) {
@@ -142,17 +36,15 @@
         meetLink: link,
         timestamp: new Date().toISOString(),
       });
-      alert("✅ Live class started successfully!");
+      alert("🎥 Live class started!");
       document.getElementById("meet-link").value = "";
     };
 
-    // 🛑 End Live
     window.endLive = function () {
       set(ref(db, "live_class"), { status: "OFFLINE" });
       alert("🛑 Live class ended!");
     };
 
-    // 📢 Announcement post (unchanged)
     window.postAnnouncement = function () {
       const msg = document.getElementById("announcement").value.trim();
       if (!msg) {
@@ -165,6 +57,74 @@
       document.getElementById("announcement").value = "";
     };
   </script>
-</body>
+</head>
 
+<body class="flex flex-col items-center min-h-screen bg-gray-50 p-6">
+
+  <h1 class="text-3xl font-bold mb-8">🎥 Vyatihar Teacher Control Panel</h1>
+
+  <!-- 🎯 Live Class Controls -->
+  <div class="bg-white shadow-lg rounded-xl p-6 w-[400px] mb-10 border-t-4 border-red-600">
+    <h2 class="text-xl font-semibold mb-4">🎬 Start / End Live Class</h2>
+    <input id="meet-link" type="text" placeholder="Paste Google Meet link..."
+      class="w-full border p-3 rounded-lg mb-3" />
+    <button onclick="startLive()" class="bg-red-600 text-white px-5 py-2 rounded-lg w-full mb-2">
+      🔴 Start Live
+    </button>
+    <button onclick="endLive()" class="bg-gray-600 text-white px-5 py-2 rounded-lg w-full">
+      ⚪ End Live
+    </button>
+  </div>
+
+  <!-- 📢 Announcement Section -->
+  <div class="bg-white shadow-xl rounded-xl p-6 w-[400px] border-t-4 border-blue-600">
+    <h2 class="text-xl font-semibold mb-4">📢 Make an Announcement</h2>
+    <textarea id="announcement" rows="3"
+      class="w-full border p-3 rounded-lg mb-3"></textarea>
+    <button onclick="postAnnouncement()" class="bg-blue-600 text-white px-5 py-2 rounded-lg w-full">
+      📤 Post Announcement
+    </button>
+  </div>
+
+  <!-- 🧑‍🎓 Student Details + DELETE BUTTON -->
+  <div class="bg-white shadow-xl rounded-xl p-6 w-[90%] md:w-[800px] mt-10 border-t-4 border-green-600">
+    <h2 class="text-xl font-bold mb-4 text-gray-800">📊 Registered Students</h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-300 rounded-lg text-sm">
+        <thead class="bg-gray-100 text-gray-700">
+          <tr>
+            <th class="py-2 px-3 border">ID</th>
+            <th class="py-2 px-3 border">Username</th>
+            <th class="py-2 px-3 border">Email</th>
+            <th class="py-2 px-3 border">Coins</th>
+            <th class="py-2 px-3 border">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for user in users %}
+          <tr class="hover:bg-gray-50 text-center">
+            <td class="py-2 px-3 border">{{ user.id }}</td>
+            <td class="py-2 px-3 border">{{ user.username }}</td>
+            <td class="py-2 px-3 border">{{ user.email }}</td>
+            <td class="py-2 px-3 border">{{ user.coins }}</td>
+
+            <td class="py-2 px-3 border">
+              <form action="/delete_user/{{ user.id }}" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this user?');">
+                <button class="bg-red-600 text-white px-3 py-1 rounded">
+                  🗑️ Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+
+</body>
 </html>

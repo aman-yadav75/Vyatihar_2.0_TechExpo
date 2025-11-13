@@ -70,12 +70,18 @@ genai.configure(api_key="AIzaSyCSVU8XDYfcvr7hzre15llP8mG6C9Bzsec")
 def home():
     return render_template('index.html')
 
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_page():
-    if not session.get("is_admin"):
-        return redirect(url_for("login"))
+    # 🛑 Block if not logged in
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
+    # 🛑 Block if not admin
+    user = User.query.get(session['user_id'])
+    if not user or not getattr(user, 'is_admin', False):
+        return "<h3 style='color:red;'>❌ Access Denied — Admins Only.</h3>"
+
+    # 📢 Handle announcement submission
     if request.method == 'POST':
         message = request.form.get("announcement")
         if message:
@@ -84,10 +90,31 @@ def admin_page():
             db.session.commit()
             print("📢 New announcement added:", message)
 
+    # 📥 Load data for admin dashboard
     users = User.query.all()
     announcements = Announcement.query.order_by(Announcement.created_at.desc()).all()
-    return render_template("admin.html", users=users, announcements=announcements)
 
+    return render_template('admin.html', users=users, announcements=announcements)
+
+
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    admin = User.query.get(session['user_id'])
+    if not admin or not getattr(admin, 'is_admin', False):
+        return "<h3 style='color:red;'>❌ Access Denied — Admins Only.</h3>"
+
+    user_to_delete = User.query.get(user_id)
+    if not user_to_delete:
+        return jsonify({"error": "User not found"}), 404
+
+    db.session.delete(user_to_delete)
+    db.session.commit()
+
+    print(f"🗑️ Deleted user: {user_to_delete.email}")
+    return redirect(url_for('admin_page'))
 
 
 # 📢 Create Announcement
@@ -117,18 +144,6 @@ def add_coins(user_id):
         db.session.commit()
     return redirect(url_for("admin_page"))
 
-
-
-@app.route('/delete_user/<int:user_id>')
-def delete_user(user_id):
-    if not session.get("is_admin"):
-        return redirect(url_for("login"))
-
-    user = User.query.get(user_id)
-    if user:
-        db.session.delete(user)
-        db.session.commit()
-    return redirect(url_for("admin_page"))
 
 
 
@@ -205,10 +220,13 @@ def login():
 
         user = User.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password):
-            session["user_id"] = user.id
-            session["user_name"] = user.username
 
-            # 👇 NEW: Check if admin and redirect
+            # Save basic session info
+            session["user_id"] = user.id
+            session["username"] = user.username
+            session["email"] = user.email
+
+            # Check admin
             if getattr(user, "is_admin", False):
                 session["is_admin"] = True
                 return redirect(url_for("admin_page"))
@@ -219,6 +237,7 @@ def login():
         return "<h3 style='color:red;'>❌ Invalid credentials. <a href='/login'>Try again</a>.</h3>"
 
     return render_template("login.html")
+
 
 
 
