@@ -309,6 +309,39 @@ def upload_note():
     file.save(os.path.join(UPLOAD_FOLDER, filename))
     return f"<h3>✅ Note uploaded successfully: {filename}</h3><a href='/dashboard'>Go Back</a>"
 
+
+# ==============================
+# 👑 AUTO CREATE ADMIN (Once)
+# ==============================
+with app.app_context():
+    existing_admin = User.query.filter_by(email="admin@vyatihar.com").first()
+
+    if not existing_admin:
+        admin_pass = bcrypt.generate_password_hash("admin123").decode("utf-8")
+        admin = User(
+            username="admin",
+            email="admin@vyatihar.com",
+            password=admin_pass,
+            is_admin=True
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print("👑 Admin user created automatically!")
+    else:
+        print("👑 Admin already exists")
+
+
+# ==============================
+# 🛠️ AUTO CREATE DB ON STARTUP
+# ==============================
+with app.app_context():
+    try:
+        db.create_all()
+        print("✅ Database tables ensured (Render OK)")
+    except Exception as e:
+        print("❌ DB Error:", e)
+
+
 # ==================================
 # 🏁 START SERVER
 # ==================================
@@ -316,13 +349,3 @@ if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5001))
     print(f"🚀 Flask server starting on port {port}...")
     app.run(host="0.0.0.0", port=port, debug=True)
-
-# -------------------------------
-# 🚀 Auto-create database on Render
-# -------------------------------
-with app.app_context():
-    try:
-        db.create_all()
-        print("✅ Database created successfully!")
-    except Exception as e:
-        print("❌ Database creation failed:", e)
