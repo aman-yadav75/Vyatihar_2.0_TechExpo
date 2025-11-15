@@ -35,7 +35,7 @@ os.makedirs(INSTANCE_DIR, exist_ok=True)   # <-- creates folder if missing
 
 # Use an absolute path for sqlite DB file to avoid "unable to open database file"
 DB_PATH = os.path.join(INSTANCE_DIR, "users.db")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + DB_PATH
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://vyatihar_db_user:WtSWSROk40puDu4C9CcfN1gWFEuz2q05@dpg-d4bv7f3ipnbc7393kq70-a/vyatihar_db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # init DB + bcrypt
