@@ -18,7 +18,8 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # 🚀 FLASK SETUP
 # ==================================
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
-app.secret_key = "vyatihar_super_secret_key_123456789"  # 🔒 must stay constant
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
+
 
 from datetime import timedelta
 
@@ -27,24 +28,34 @@ app.permanent_session_lifetime = timedelta(days=7)
 
 
 
-# ⚙️ DATABASE SETUP (safe for Render / local)
 # ==================================
-# Make sure 'instance' folder exists so sqlite can create the DB file inside it
-INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
-os.makedirs(INSTANCE_DIR, exist_ok=True)   # <-- creates folder if missing
+# ⚙️ DATABASE SETUP (Auto-detect SQLite or PostgreSQL)
+# ==================================
 
-# Use an absolute path for sqlite DB file to avoid "unable to open database file"
-DB_PATH = os.path.join(INSTANCE_DIR, "users.db")
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://vyatihar_db_user:WtSWSROk40puDu4C9CcfN1gWFEuz2q05@dpg-d4bv7f3ipnbc7393kq70-a/vyatihar_db"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-# init DB + bcrypt
+if DATABASE_URL:
+    print("📡 Using PostgreSQL from Render")
+    # Render gives URL starting with "postgres://"
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+else:
+    print("💾 Using local SQLite database")
+    INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
+    os.makedirs(INSTANCE_DIR, exist_ok=True)
+
+    DB_PATH = os.path.join(INSTANCE_DIR, "users.db")
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + DB_PATH
+
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-# ==================================
+
 # 🧑‍💻 USER MODEL
-# ==================================
 class User(db.Model):
     __tablename__ = 'users'
     __table_args__ = {'extend_existing': True}
@@ -54,22 +65,32 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     coins = db.Column(db.Integer, default=0)
-    is_admin = db.Column(db.Boolean, default=False)  # ✅ new column
-
-    # 📢 Announcements Table
-class Announcement(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(500), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.now())
-
+    is_admin = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"<User {self.username}>"
 
+# 📢 Announcements Table
+class Announcement(db.Model):
+    __tablename__ = 'announcements'
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+    def __repr__(self):
+        return f"<Announcement {self.id}>"
+
+
 # ==================================
 # 🔑 GEMINI API KEY
 # ==================================
-genai.configure(api_key="AIzaSyCSVU8XDYfcvr7hzre15llP8mG6C9Bzsec")
+import sys
+GENAI_KEY = os.environ.get("GENAI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+if not GENAI_KEY:
+    print("⚠️ GENAI_API_KEY not set — AI features will be disabled")
+else:
+    genai.configure(api_key=GENAI_KEY)
+
 
 # ==================================
 # 🌍 PAGE ROUTES
@@ -308,14 +329,25 @@ def get_live_class():
 # ==================================
 # 📄 NOTES UPLOAD
 # ==================================
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt', 'pptx', 'mp4'}
+MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50 MB
+
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/upload_note', methods=['POST'])
 def upload_note():
     file = request.files.get('note')
-    if not file:
+    if not file or file.filename == '':
         return "No file uploaded", 400
+    if not allowed_file(file.filename):
+        return "File type not allowed", 400
     filename = secure_filename(file.filename)
     file.save(os.path.join(UPLOAD_FOLDER, filename))
     return f"<h3>✅ Note uploaded successfully: {filename}</h3><a href='/dashboard'>Go Back</a>"
+
 
 # ==============================
 # 🛠️ AUTO CREATE DB ON STARTUP (FIRST)
@@ -348,6 +380,23 @@ with app.app_context():
     else:
         print("👑 Admin already exists")
 
+@app.route('/subjects')
+def subjects_page():
+    return render_template('index.html')
+
+@app.route('/match')
+def match_page():
+    return render_template('index.html')
+
+
+@app.route("/projects")
+def projects_page():
+    return render_template("index.html")
+
+
+@app.route('/rewards')
+def rewards_page():
+    return render_template('index.html')
 
 
 # ==================================
@@ -355,5 +404,6 @@ with app.app_context():
 # ==================================
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5001))
-    print(f"🚀 Flask server starting on port {port}...")
-    app.run(host="0.0.0.0", port=port, debug=True)
+    debug_mode = os.environ.get("FLASK_DEBUG", "False").lower() in ("1","true","yes")
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)
+

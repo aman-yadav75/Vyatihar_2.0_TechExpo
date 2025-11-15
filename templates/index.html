@@ -5,7 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vyatihar - Where Ideas Meet</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
+      .nav-link {
+         color: #d1d5db !important;
+         padding: 4px 6px;
+         transition: none !important;
+      }
+      .nav-link:hover {
+         color: white !important;
+         background: transparent !important;
+      }
+      #mainNav.scrolled {
+         background: #2f3241ee;
+         box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+         backdrop-filter: blur(10px);
+      }
+   </style>
+  <style>
+
+
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
     
     * {
@@ -388,7 +407,51 @@ html.dark .testimonial-card {
   color: #e2e8f0; /* light text in dark mode */
 }
 
-  </style>
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+</style>
+
+
+<style>
+  /* FIX NAV TEXT INVISIBLE */
+  nav a,
+  .nav-link,
+  nav span,
+  nav button {
+    color: #ffffff !important;
+  }
+
+  /* Menu hover remove */
+  .nav-link:hover {
+    color: #ffffff !important;
+    background: transparent !important;
+  }
+
+  /* Make menu items fully visible */
+  nav ul li a {
+    opacity: 1 !important;
+  }
+</style>
+
+<style>
+  /* Buttons visibility fix */
+  nav a.bg-indigo-500,
+  nav a.bg-blue-600 {
+    color: #ffffff !important;
+  }
+</style>
 
 
   <!-- API  -->
@@ -421,60 +484,76 @@ html.dark .testimonial-card {
 
 
  <div id="app" style="display: none;">
-<nav id="mainNav"
-  class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700
-  bg-white/70 dark:bg-[#0f172a]/70 transition-all duration-300 shadow-sm">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
+<!-- FIXED NAVBAR -->
+<nav id="mainNav" class="fixed top-0 left-0 w-full bg-[#2f3241] shadow-md z-50">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-      <!-- 🔹 Logo -->
-      <div class="flex items-center space-x-3">
-       <img src="{{ url_for('static', filename='assets/vyatihar_logo.jpeg') }}" 
-     alt="Vyatihar Logo" 
-     class="w-16 h-16 object-cover rounded-full mx-auto mb-4">
+    <!-- LEFT: Logo -->
+    <a href="/" class="flex items-center space-x-2">
+      <img src="/static/assets/vyatihar_logo.jpeg" class="h-10 w-10 rounded-full object-cover">
+      <span class="text-white text-xl font-bold">Vyatihar</span>
+    </a>
 
-        <span class="text-2xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Vyatihar
-        </span>
-      </div>
+    <!-- DESKTOP MENU -->
+  <ul class="hidden md:flex items-center space-x-6 text-gray-300 font-medium">
+    <li><a id="navHome" class="nav-link" href="/">Home</a></li>
+    <li><a id="navDashboard" class="nav-link" href="/dashboard">Dashboard</a></li>
+    <li><a id="navSubjects" class="nav-link" href="/subjects">Subjects</a></li>
+   <li><a id="navAI" class="nav-link" href="/match">AI Match</a></li>
+<li><a id="navProjects" class="nav-link" href="/projects">Projects</a></li>
 
-      <!-- 🔹 Navigation Links -->
-      <div class="hidden md:flex space-x-2">
-        <button onclick="navigateTo('home')" class="nav-link px-4 py-2 rounded-lg">Home</button>
-       <a href="{{ url_for('dashboard') }}" class="nav-link px-4 py-2 rounded-lg">Dashboard</a>
-        <button onclick="navigateTo('subjects')" class="nav-link px-4 py-2 rounded-lg">Subjects</button>
-        <button onclick="navigateTo('match')" class="nav-link px-4 py-2 rounded-lg">AI Match</button>
-        <button onclick="navigateTo('projects')" class="nav-link px-4 py-2 rounded-lg">Projects</button>
-        <button onclick="navigateTo('rewards')" class="nav-link px-4 py-2 rounded-lg">Rewards</button>
-        <a href="/admin" class="text-purple-600 hover:text-purple-800 font-semibold">Admin Panel</a>
+    <li><a id="navRewards" class="nav-link" href="/rewards">Rewards</a></li>
+  </ul>
 
-      </div>
-
-      <!-- 🔹 Right Side -->
-      <div class="flex items-center space-x-3">
-        <div id="coinDisplay" class="hidden items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full">
-          <span class="text-xl">🪙</span>
-          <span class="font-bold text-yellow-700" id="coinCount">0</span>
-        </div>
-
-        <button id="authButton" class="px-4 py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
-          Login
-        </button>
-
-        <button id="themeToggle" class="p-2 rounded-lg text-xl hover:bg-gray-100 dark:hover:bg-white/10 transition">
-          🌙
-        </button>
-
-        <!-- Place this near your navbar (example) -->
-<button id="googleSignIn" 
-  class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-  🔐 Connect Google Drive
+    <!-- RIGHT BUTTONS (Desktop only) -->
+    <div class="hidden md:flex items-center space-x-3">
+      <button id="authButton" class="px-5 py-2 bg-indigo-500 text-white rounded-lg shadow">
+  Login
 </button>
 
-      </div>
+
+      <a href="/drive/connect" class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow flex items-center space-x-2">
+        <span>🔐</span><span>Connect Drive</span>
+      </a>
+
+      <button id="themeToggle" class="text-yellow-300 text-xl">🌙</button>
+      <button id="enable-sound" class="px-3 py-1 bg-green-600 text-white rounded text-sm">
+  Enable Sound
+</button>
 
     </div>
+
+    <!-- MOBILE MENU BUTTON -->
+    <button id="menuToggle" class="md:hidden text-white text-3xl">
+      ☰
+    </button>
   </div>
+ 
+
+  <!-- MOBILE DROPDOWN -->
+  <div id="mobileMenu" class="hidden flex-col bg-[#2f3241] text-white px-4 py-4 space-y-4 md:hidden">
+
+    <a id="navHomeMobile" class="nav-link block" href="/">Home</a>
+    <a id="navDashboardMobile" class="nav-link block" href="/dashboard">Dashboard</a>
+    <a id="navSubjectsMobile" class="nav-link block" href="/subjects">Subjects</a>
+    <a id="navAIMobile" class="nav-link block" href="/match">AI Match</a>
+<a id="navProjectsMobile" class="nav-link block" href="/projects">Projects</a>
+
+    <a id="navRewardsMobile" class="nav-link block" href="/rewards">Rewards</a>
+
+    <a id="loginButtonMobile" href="/login" class="block bg-indigo-500 text-center py-2 rounded-lg">Login</a>
+
+    <a href="/drive/connect" class="block bg-blue-600 text-center py-2 rounded-lg">
+      🔐 Connect Drive
+    </a>
+  </div>
+    <select id="languageSelect" class="bg-[#2f3241] text-white border px-2 py-1 rounded">
+  <option value="en">English</option>
+  <option value="hi">हिन्दी</option>
+  <option value="mr">मराठी</option>
+  <option value="ta">தமிழ்</option>
+</select>
+
 </nav>
 </div>
 
@@ -519,8 +598,8 @@ html.dark .testimonial-card {
 
 
 <!-- 🔥 Firebase Setup -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
@@ -537,46 +616,41 @@ const db = firebase.database();
 
 
 <script>
+// 🔊 Sound permission flag
 let audioAllowed = false;
 
+// Enable sound on user click
 document.getElementById('enable-sound').addEventListener('click', () => {
   audioAllowed = true;
-  alert("🔔 Sound enabled for notifications!");
+  alert("🔔 Sound enabled!");
   document.getElementById('enable-sound').style.display = 'none';
 });
 
-// ✅ Firebase real-time listener
+// ==============================
+// ✅ Firebase REAL-TIME LISTENER
+// ==============================
 const liveRef = firebase.database().ref("live_class");
 
 liveRef.on("value", snapshot => {
   const data = snapshot.val();
-  if (data && data.status === "LIVE") {
-    showNotification(data);
+  if (!data) return;
+
+  // 🟢 If class is live → show popup
+  if (data.status === "LIVE") {
+    showLiveNotification(data);     // <-- FIXED
+  }
+
+  // 🎧 Play sound only when popup triggered
+  if (data.status === "LIVE" && audioAllowed) {
+    const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+    audio.play().catch(err => console.warn("⚠️ Sound blocked until click:", err));
   }
 });
 
-function showNotification(data) {
-  if (window.alreadyNotified) return;
-  window.alreadyNotified = true;
-
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <div class="fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-2xl shadow-xl z-50 animate-bounce">
-      🎥 <strong>${data.subject}</strong> class is <b>LIVE!</b><br>
-      <a href="${data.meetLink}" target="_blank" class="underline text-yellow-300">Join Now</a>
-    </div>
-  `;
-  document.body.appendChild(div);
-
-  if (audioAllowed) {
-    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    audio.play().catch(err => console.warn("⚠️ Audio play blocked:", err));
-  }
-}
 </script>
 
 
-  <script>
+<script>
     let state = {
       currentPage: 'home',
       isAuthenticated: false,
@@ -600,10 +674,130 @@ function showNotification(data) {
       ]
     };
 
-    window.addEventListener('load', function() {
+
+
+  // --- add AFTER your "state" object declaration ---
+  const translations = {
+    en: {
+      learnTogether: "Learn Together with",
+      description: "Where Ideas Meet & Knowledge Grows. Connect with learners and mentors worldwide through AI-powered matchmaking.",
+      getStarted: "Get Started Free",
+      learnMore: "Learn More",
+      login: "Login",
+      subjects: "Subjects",
+      dashboard: "Dashboard",
+      projects: "Projects",
+      rewards: "Rewards",
+      enableSound: "Enable Sound Alerts"
+    },
+    hi: {
+      learnTogether: "साथ मिलकर सीखें",
+      description: "जहाँ विचार मिलते हैं और ज्ञान बढ़ता है। दुनिया भर के शिक्षार्थियों और मार्गदर्शकों से जुड़ें।",
+      getStarted: "शुरू करें",
+      learnMore: "और जानें",
+      login: "लॉगिन",
+      subjects: "विषय",
+      dashboard: "डैशबोर्ड",
+      projects: "प्रोजेक्ट्स",
+      rewards: "इनाम",
+      enableSound: "🔊 ध्वनि सक्षम करें"
+    },
+    mr: {
+      learnTogether: "एकत्र शिका",
+      description: "जिथे कल्पना भेटतात आणि ज्ञान वाढते. जगभरातील शिकणाऱ्यांशी आणि मार्गदर्शकांशी कनेक्ट व्हा.",
+      getStarted: "सुरू करा",
+      learnMore: "अधिक जाणून घ्या",
+      login: "लॉगिन",
+      subjects: "विषय",
+      dashboard: "डॅशबोर्ड",
+      projects: "प्रोजेक्ट्स",
+      rewards: "बक्षिसे",
+      enableSound: "🔊 आवाज सक्षम करा"
+    },
+    ta: {
+      learnTogether: "இணைந்து கற்றுக்கொள்ளுங்கள்",
+      description: "சிந்தனைகள் சந்தித்து அறிவு வளருகிறது. உலகளாவிய பயில்தவர்களுடன் இணைக.",
+      getStarted: "தொடக்கம்",
+      learnMore: "மேலும் அறிந்து கொள்ள",
+      login: "உள்நுழைவு",
+      subjects: "பாடங்கள்",
+      dashboard: "டேஷ்போர்டு",
+      projects: "பணிகள்",
+      rewards: "பரிசுகள்",
+      enableSound: "🔊 ஒலி செயல்படுத்து"
+    }
+  };
+
+function applyLanguage(lang) {
+  const t = translations[lang] || translations["en"];
+
+  // 🌟 HOME PAGE
+  if (document.getElementById("learnTogetherText"))
+    document.getElementById("learnTogetherText").innerText = t.learnTogether;
+
+  if (document.getElementById("descriptionText"))
+    document.getElementById("descriptionText").innerText = t.description;
+
+  if (document.getElementById("getStartedBtn"))
+    document.getElementById("getStartedBtn").innerText = t.getStarted;
+
+  if (document.getElementById("learnMoreBtn"))
+    document.getElementById("learnMoreBtn").innerText = t.learnMore;
+
+  // 🌟 NAVBAR (Desktop)
+  if (document.getElementById("navHome"))
+    document.getElementById("navHome").innerText = t.home || "Home";
+
+  if (document.getElementById("navDashboard"))
+    document.getElementById("navDashboard").innerText = t.dashboard;
+
+  if (document.getElementById("navSubjects"))
+    document.getElementById("navSubjects").innerText = t.subjects;
+
+  if (document.getElementById("navProjects"))
+    document.getElementById("navProjects").innerText = t.projects;
+
+  if (document.getElementById("navRewards"))
+    document.getElementById("navRewards").innerText = t.rewards;
+
+  if (document.getElementById("loginButton"))
+    document.getElementById("loginButton").innerText = t.login;
+
+  // 🌟 NAVBAR (Mobile)
+  if (document.getElementById("navHomeMobile"))
+    document.getElementById("navHomeMobile").innerText = t.home || "Home";
+
+  if (document.getElementById("loginButtonMobile"))
+    document.getElementById("loginButtonMobile").innerText = t.login;
+
+  // 🌟 LOGIN PAGE
+  if (document.getElementById("loginTitle"))
+    document.getElementById("loginTitle").innerText = t.loginTitle || "Welcome Back";
+
+  if (document.getElementById("loginSubmitBtn"))
+    document.getElementById("loginSubmitBtn").innerText = t.login;
+
+  // 🌟 SUBJECTS PAGE
+  if (document.getElementById("subjectsTitle"))
+    document.getElementById("subjectsTitle").innerText = t.subjects;
+
+  // 🌟 REWARDS PAGE
+  if (document.getElementById("rewardsTitle"))
+    document.getElementById("rewardsTitle").innerText = t.rewards;
+
+  if (document.getElementById("coinsLabel"))
+    document.getElementById("coinsLabel").innerText = t.totalCoins || "Total Coins";
+}
+
+</script>
+
+<script>
+window.addEventListener('load', function() {
   setTimeout(function() {
+
     document.getElementById('preloader').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+
     loadUserData();
 
     // 🩵 Fix: Make sure Login button works even before authentication
@@ -616,9 +810,12 @@ function showNotification(data) {
       }
     });
 
-    navigateTo('home');
+    handleDirectURL();
+
+
   }, 1500);
 });
+
 
 
     function loadUserData() {
@@ -675,37 +872,44 @@ function showNotification(data) {
       else if (page === 'projects') renderProjects();
       else if (page === 'rewards') renderRewards();
       else renderHome();
-    }
+        // Re-apply language after page re-renders
+  setTimeout(() => {
+    const saved = localStorage.getItem('vy_lang') || 'en';
+    applyLanguage(saved);
+  }, 30);
+}
+
+    
 
     function renderHome() {
       document.getElementById('content').innerHTML = `
         <div class="max-w-7xl mx-auto px-4 py-16">
           <div class="text-center mb-20">
-            <h1 class="text-6xl font-extrabold mb-6 leading-tight">
-       <span class="text-[#1a1a1a] dark:text-white">
-           Learn Together with
-      </span>
-  <span
-    class="bg-gradient-to-r from-purple-600 via-pink-500 to-red-400
+            <!-- inside renderHome() content string replace hero block with this -->
+<h1 class="text-6xl font-extrabold mb-6 leading-tight">
+  <span id="learnTogetherText" class="text-[#1a1a1a] dark:text-white">Learn Together with</span>
+  <span class="bg-gradient-to-r from-purple-600 via-pink-500 to-red-400
     bg-clip-text text-transparent font-extrabold">
     &nbsp;Vyatihar
   </span>
 </h1>
 
+<p id="descriptionText" class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+  Where Ideas Meet & Knowledge Grows. Connect with learners and mentors worldwide through AI-powered matchmaking.
+</p>
 
+<div class="flex gap-4 justify-center">
+  <button id="getStartedBtn" onclick="navigateTo('signup')"
+    class="px-8 py-4 gradient-bg text-white rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition">
+    Get Started Free
+  </button>
 
+  <button id="learnMoreBtn" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})"
+    class="px-8 py-4 bg-white text-purple-600 rounded-full text-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition">
+    Learn More
+  </button>
+</div>
 
-            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Where Ideas Meet & Knowledge Grows. Connect with learners and mentors worldwide through AI-powered matchmaking.
-            </p>
-            <div class="flex gap-4 justify-center">
-              <button onclick="navigateTo('signup')" class="px-8 py-4 gradient-bg text-white rounded-full text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition">
-                Get Started Free
-              </button>
-              <button onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 bg-white text-purple-600 rounded-full text-lg font-semibold border-2 border-purple-600 hover:bg-purple-50 transition">
-                Learn More
-              </button>
-            </div>
           </div>
 
           <div class="grid md:grid-cols-4 gap-6 mb-20">
@@ -812,20 +1016,26 @@ function showNotification(data) {
           <div class="glass rounded-3xl shadow-2xl p-8">
             <div class="text-center mb-8">
               <div class="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">V</div>
-              <h2 class="text-3xl font-bold">Welcome Back</h2>
+              <h2 id="loginTitle" class="text-3xl font-bold">Welcome Back</h2>
               <p class="text-gray-600 mt-2">Login to continue your learning journey</p>
             </div>
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-              <input type="email" id="loginEmail" placeholder="Email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              <input type="password" id="loginPassword" placeholder="Password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              <button type="submit" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
-                Log In
-              </button>
-              <div class="text-center text-gray-500">or</div>
-              <button type="button" class="w-full py-3 bg-white border-2 border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2">
-                <span>🔍</span> Continue with Google
-              </button>
-            </form>
+            <form method="POST" action="/login" class="space-y-4">
+
+  <input name="email" type="email" placeholder="Email" required
+    class="w-full px-4 py-3 rounded-lg border border-gray-300 
+    focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+
+  <input name="password" type="password" placeholder="Password" required
+    class="w-full px-4 py-3 rounded-lg border border-gray-300 
+    focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+
+  <button type="submit" 
+    class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
+    Log In
+  </button>
+
+</form>
+
             <p class="text-center mt-6 text-gray-600">
               Don't have an account? <button onclick="navigateTo('signup')" class="text-purple-600 font-semibold hover:underline">Sign up</button>
             </p>
@@ -859,19 +1069,27 @@ function showNotification(data) {
               <h2 class="text-3xl font-bold">Join Vyatihar</h2>
               <p class="text-gray-600 mt-2">Create your free account</p>
             </div>
-            <form onsubmit="handleSignup(event)" class="space-y-4">
-              <input type="text" id="signupName" placeholder="Full Name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              <input type="email" id="signupEmail" placeholder="Email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              <input type="tel" id="signupPhone" placeholder="Mobile Number" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              <div class="grid grid-cols-2 gap-4">
-                <input type="text" id="signupState" placeholder="State" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-                <input type="text" id="signupCity" placeholder="City" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              </div>
-              <input type="password" id="signupPassword" placeholder="Password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
-              <button type="submit" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
-                Create Account
-              </button>
-            </form>
+           <form method="POST" action="/signup" class="space-y-4">
+
+  <input name="username" type="text" placeholder="Full Name" required
+    class="w-full px-4 py-3 rounded-lg border border-gray-300 
+    focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+
+  <input name="email" type="email" placeholder="Email" required
+    class="w-full px-4 py-3 rounded-lg border border-gray-300 
+    focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+
+  <input name="password" type="password" placeholder="Password" required
+    class="w-full px-4 py-3 rounded-lg border border-gray-300 
+    focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition">
+
+  <button type="submit"
+    class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
+    Create Account
+  </button>
+
+</form>
+
             <p class="text-center mt-6 text-gray-600">
               Already have an account? <button onclick="navigateTo('login')" class="text-purple-600 font-semibold hover:underline">Log in</button>
             </p>
@@ -933,7 +1151,10 @@ function showNotification(data) {
       document.getElementById('content').innerHTML = `
         <div class="max-w-7xl mx-auto px-4 py-8">
           <div class="mb-8">
-            <h1 class="text-4xl font-bold">Welcome back, ${state.user.name}! 👋</h1>
+           <h1 class="text-4xl font-bold">
+  <span id="welcomeText">Welcome back, </span><span id="userName">${state.user.name}!</span>
+</h1>
+
             <p class="text-gray-600 mt-2">Continue your learning journey</p>
           </div>
 
@@ -951,7 +1172,7 @@ function showNotification(data) {
             <div class="glass rounded-2xl p-6 gradient-bg text-white">
               <div class="text-3xl mb-2">🏆</div>
               <div class="text-3xl font-bold">${state.coins}</div>
-              <div class="text-purple-100">Total Coins</div>
+              <div class="text-purple-100" id="coinsLabel">Total Coins</div>
             </div>
             <div class="glass rounded-2xl p-6 gradient-bg text-white">
               <div class="text-3xl mb-2">⭐</div>
@@ -1040,10 +1261,10 @@ function showNotification(data) {
               <span class="text-sm font-semibold text-purple-600">View Course</span>
             </div>
           <div class="flex flex-col gap-3">
-  <button class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
+  <button id="continueLearningBtn" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
     Continue Learning
   </button>
-  <button onclick="startLiveClass('${subject.name}')" 
+  <button id="startLiveBtn" onclick="startLiveClass('${subject.name}')" 
     class="w-full py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
     🔴 Start Live Class
   </button>
@@ -1061,7 +1282,7 @@ function showNotification(data) {
       document.getElementById('content').innerHTML = `
         <div class="max-w-7xl mx-auto px-4 py-8">
           <div class="mb-8">
-            <h1 class="text-4xl font-bold">Explore Subjects</h1>
+            <h1 id="subjectsTitle" class="text-4xl font-bold">Explore Subjects</h1>
             <p class="text-gray-600 mt-2">Choose a subject to start your learning journey</p>
           </div>
           <div class="grid md:grid-cols-3 gap-6">
@@ -1210,7 +1431,7 @@ function showNotification(data) {
       document.getElementById('content').innerHTML = `
         <div class="max-w-7xl mx-auto px-4 py-8">
           <div class="mb-8">
-            <h1 class="text-4xl font-bold">Rewards & Achievements</h1>
+            <h1 id="rewardsTitle"class="text-4xl font-bold">Rewards & Achievements</h1>
             <p class="text-gray-600 mt-2">Track your progress and earn rewards</p>
           </div>
 
@@ -1220,7 +1441,7 @@ function showNotification(data) {
               <div class="text-center py-8">
                 <div class="text-6xl mb-4">🪙</div>
                 <div class="text-5xl font-bold text-yellow-600 mb-2">${state.coins}</div>
-                <p class="text-gray-600">Total Coins Earned</p>
+                <p id="coinsSectionLabel" class="text-gray-600">Total Coins Earned</p>
               </div>
               <button onclick="earnCoins()" class="w-full py-3 gradient-bg text-white rounded-lg hover:shadow-lg transition">
                 Complete Task (+10 Coins)
@@ -1378,9 +1599,6 @@ function handleGoogleLogin(response) {
   alert(`Welcome ${user.name}! You can now start live classes.`);
 }
 
-window.onload = function () {
-  initGoogleLogin();
-};
 
 // Generate Google Meet Link Using Calendar API
 
@@ -1425,52 +1643,52 @@ async function startLiveClass(subjectName) {
 // Save Class Info to Google Drive
 
 async function saveClassToDrive(subject, meetLink) {
-  const token = localStorage.getItem("google_access_token");
-  const metadata = {
-    name: `${subject}-class-${new Date().toISOString().slice(0,10)}.txt`,
-    mimeType: "text/plain",
-  };
-  const file = new Blob([`Subject: ${subject}\nLink: ${meetLink}`], { type: "text/plain" });
+  try {
+    const token = localStorage.getItem("google_access_token");
 
-  const form = new FormData();
-  form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
-  form.append("file", file);
+    if (!token) {
+      console.log("Google Login required");
+      return;
+    }
 
-  const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
-    method: "POST",
-    headers: new Headers({ Authorization: "Bearer " + token }),
-    body: form,
-  });
+    const metadata = {
+      name: `${subject}-class-${new Date().toISOString().slice(0, 10)}.txt`,
+      mimeType: "text/plain"
+    };
 
-  const data = await res.json();
-  console.log("Class saved in Drive:", data);
-}
+    const file = new Blob(
+      [
+        `Subject: ${subject}\n` +
+        `Meet Link: ${meetLink}\n` +
+        `Uploaded: ${new Date().toLocaleString()}`
+      ],
+      { type: "text/plain" }
+    );
 
+    const form = new FormData();
+    form.append(
+      "metadata",
+      new Blob([JSON.stringify(metadata)], { type: "application/json" })
+    );
+    form.append("file", file);
 
-function startLiveClass(subjectName) {
-  const meetLinks = {
-    'Finance': 'https://meet.google.com/finance-live',
-    'Marketing': 'https://meet.google.com/marketing-live',
-    'AI & ML': 'https://meet.google.com/aiml-live',
-    'Web Development': 'https://meet.google.com/webdev-live',
-    'Data Science': 'https://meet.google.com/datasci-live',
-    'Design': 'https://meet.google.com/design-live'
-  };
+    const res = await fetch(
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+      {
+        method: "POST",
+        headers: new Headers({ Authorization: "Bearer " + token }),
+        body: form,
+      }
+    );
 
-  const link = meetLinks[subjectName];
-  
-  if (link) {
-    // 🔴 Show "LIVE" badge dynamically on clicked subject
-    document.querySelectorAll('[id^="live-"]').forEach(el => el.classList.add('hidden'));
-    const liveTag = document.getElementById(`live-${subjectName}`);
-    if (liveTag) liveTag.classList.remove('hidden');
+    const data = await res.json();
+    console.log("Class saved in Drive:", data);
 
-    // Open Google Meet in a new tab
-    window.open(link, '_blank');
-  } else {
-    alert('No live class available for ' + subjectName);
+  } catch (err) {
+    console.error("Drive upload error:", err);
   }
 }
+
 
 // 🌐 GOOGLE DRIVE API SETUP
 function loadGoogleAPI() {
@@ -1628,9 +1846,71 @@ async function uploadRecording(subjectName) {
 
   fileInput.click();
 }
+</script>
 
+<script>
+  // Apply translated strings to elements with specific IDs
+  function applyLanguage(lang) {
+    const t = translations[lang] || translations['en'];
 
-  </script>
+    // Home page
+    const elLearn = document.getElementById('learnTogetherText');
+    if (elLearn) elLearn.innerText = t.learnTogether;
+
+    const elDesc = document.getElementById('descriptionText');
+    if (elDesc) elDesc.innerText = t.description;
+
+    const btnStart = document.getElementById('getStartedBtn');
+    if (btnStart) btnStart.innerText = t.getStarted;
+
+    const btnLearn = document.getElementById('learnMoreBtn');
+    if (btnLearn) btnLearn.innerText = t.learnMore;
+
+    // Navbar / buttons
+    const loginBtns = document.querySelectorAll('.loginBtn');
+    loginBtns.forEach(b => b.innerText = t.login);
+
+    // Enable sound label (if you have a button)
+    const enableSoundBtn = document.getElementById('enable-sound');
+    if (enableSoundBtn) enableSoundBtn.innerText = t.enableSound;
+  }
+
+  // When user changes language in the desktop select
+  const langSelect = document.getElementById('languageSelect');
+  if (langSelect) {
+    langSelect.addEventListener('change', function() {
+      const lang = this.value;
+      localStorage.setItem('vy_lang', lang);
+      applyLanguage(lang);
+      // Mirror mobile select (if present)
+      const m = document.getElementById('languageSelectMobile');
+      if (m) m.value = lang;
+    });
+  }
+
+  // Mobile select
+  const langSelectMobile = document.getElementById('languageSelectMobile');
+  if (langSelectMobile) {
+    langSelectMobile.addEventListener('change', function() {
+      const lang = this.value;
+      localStorage.setItem('vy_lang', lang);
+      applyLanguage(lang);
+      const d = document.getElementById('languageSelect');
+      if (d) d.value = lang;
+    });
+  }
+
+  // Load saved language on page load
+  window.addEventListener('load', () => {
+    const saved = localStorage.getItem('vy_lang') || 'en';
+    const d = document.getElementById('languageSelect');
+    if (d) d.value = saved;
+    const m = document.getElementById('languageSelectMobile');
+    if (m) m.value = saved;
+    applyLanguage(saved);
+  });
+</script>
+
 <!-- 🔊 Enable Sound Button -->
 <button id="enable-sound" 
   class="fixed bottom-5 right-5 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700">
@@ -1638,7 +1918,7 @@ async function uploadRecording(subjectName) {
 </button>
 
 <script>
-let audioAllowed = false;
+
 
 // ✅ When user clicks enable sound button
 document.getElementById('enable-sound').addEventListener('click', () => {
@@ -1656,34 +1936,40 @@ async function checkLiveClass() {
     console.log("🔍 Checking Live Status:", data);
 
     if (data.status === "LIVE") {
-      showNotification(data);
+      showLiveNotification(data);  // FIXED HERE
     }
   } catch (err) {
     console.error("❌ Error fetching live class:", err);
   }
 }
 
-function showNotification(data) {
-  if (window.alreadyNotified) return;
-  window.alreadyNotified = true;
 
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <div class="fixed top-4 right-4 bg-green-600 text-white px-6 py-4 rounded-2xl shadow-xl z-50 animate-bounce">
-      🎥 <strong>${data.subject}</strong> class is <b>LIVE!</b><br>
-      <a href="${data.meetLink}" target="_blank" class="underline text-yellow-300">Join Now</a>
-    </div>
+function showLiveNotification(data) {
+  if (window.alreadyShown) return;
+  window.alreadyShown = true;
+
+  const box = document.createElement("div");
+  box.id = "vy-live-popup";
+
+  box.className = `
+    fixed top-4 right-4 bg-green-600 text-white
+    px-5 py-3 rounded-xl shadow-lg z-50
+    transition-all duration-500
   `;
-  document.body.appendChild(div);
 
-  // 🔊 Play alert sound only if allowed
-  if (audioAllowed) {
-    const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    audio.play().catch(err => console.warn("⚠️ Audio play blocked:", err));
-  } else {
-    console.log("🔇 Sound disabled until you click 'Enable Sound Alerts'");
-  }
+  box.style.animation = "slideIn 0.4s ease-out";
+
+  box.innerHTML = `
+    🎥 <strong>${data.subject}</strong> class is <b>LIVE!</b><br>
+    <a href="${data.meetLink}" target="_blank" class="underline text-yellow-300">Join Now</a>
+  `;
+
+  document.body.appendChild(box);
+
+  setTimeout(() => box.remove(), 5000);
 }
+
+
 
 // 🔁 Check every 10 seconds
 setInterval(checkLiveClass, 10000);
@@ -1693,11 +1979,8 @@ checkLiveClass();
 
 
 <!-- 🔔 Realtime Live Class Listener -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-  // Firebase Config (same as admin.html)
+<script>
+  // Firebase v8 Config
   const firebaseConfig = {
     apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
     authDomain: "vyatihar-live.firebaseapp.com",
@@ -1708,49 +1991,32 @@ checkLiveClass();
     appId: "1:447656980301:web:bc01def31d48fb63ab5104"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  // Initialize Firebase v8
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  // 🔊 Ask for sound permission once
+  // 🔊 Sound allowed flag
   let soundEnabled = false;
-  document.addEventListener('click', () => {
+  document.addEventListener("click", () => {
     soundEnabled = true;
   });
 
-  // 🔁 Listen to Firebase for live_class changes
-  const liveRef = ref(db, "live_class");
-  onValue(liveRef, (snapshot) => {
+  // 🔁 Realtime Firebase listener (v8)
+  const liveRef = db.ref("live_class");
+
+  liveRef.on("value", snapshot => {
     const data = snapshot.val();
     console.log("🎥 Realtime Update:", data);
 
     if (data && data.status === "LIVE") {
       showLiveNotification(data);
+
+      if (soundEnabled) {
+        const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+        beep.play().catch(e => console.warn("Sound blocked:", e));
+      }
     }
   });
-
-  // 🎯 Show popup + play sound
-  function showLiveNotification(data) {
-    if (window.alreadyShown) return;
-    window.alreadyShown = true;
-
-    const popup = document.createElement("div");
-    popup.innerHTML = `
-      <div style="position:fixed;top:20px;right:20px;background:#10B981;color:white;
-        padding:15px 25px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.3);
-        font-size:16px;z-index:1000;">
-        🎥 <b>${data.subject}</b> class is <b>LIVE!</b><br>
-        <a href="${data.meetLink}" target="_blank" style="color:yellow;text-decoration:underline;">Join Now</a>
-      </div>
-    `;
-    document.body.appendChild(popup);
-
-    if (soundEnabled) {
-      const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-      beep.play().catch(e => console.log("Sound blocked until click"));
-    } else {
-      console.log("🔇 Click once anywhere to enable sound.");
-    }
-  }
 </script>
 
 
@@ -1790,6 +2056,49 @@ async function askAI() {
   });
 </script>
 
+<script>
+  window.addEventListener("scroll", () => {
+    const nav = document.getElementById("mainNav");
+    if (window.scrollY > 10) {
+      nav.classList.add("scrolled");
+    } else {
+      nav.classList.remove("scrolled");
+    }
+  });
+</script>
+
+
+<script>
+  const menuBtn = document.getElementById("menuToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  menuBtn.addEventListener("click", () => {
+  mobileMenu.classList.toggle("hidden");
+  });
+
+
+// ⭐ Detect direct URL routes (subjects, ai-match, rewards)
+function handleDirectURL() {
+    const path = window.location.pathname;
+
+    if (path === "/subjects") {
+        navigateTo("subjects");
+    } 
+    else if (path === "/rewards") {
+        navigateTo("rewards");
+    }
+    else if (path === "/projects") {
+        navigateTo("projects");
+    }
+   else if (path === "/match" || path === "/ai-match" || path === "/ai") navigateTo("match");
+
+    else {
+        navigateTo("home");
+    }
+}
+
+
+</script>
 
 </body>
 </html>
