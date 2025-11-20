@@ -33,6 +33,16 @@
       {% endif %}
     </div>
 
+
+    <!-- LIVE CLASS SECTION -->
+<div class="bg-white p-6 rounded-xl shadow mb-6">
+  <h2 class="text-xl font-semibold mb-3">🎥 Live Class</h2>
+
+  <div id="liveBox">
+    <p class="text-gray-600">Checking live status...</p>
+  </div>
+</div>
+
     <!-- BOOKINGS LIST -->
     <div class="bg-white p-6 rounded-xl shadow">
       <h2 class="text-xl font-bold mb-4">📘 Student Booking Requests</h2>
@@ -152,8 +162,49 @@ async function takeAction(id, action, meet_link = "") {
   loadBookings();
 }
 
+async function checkLiveClass() {
+  const res = await fetch("/api/live/current");
+  const data = await res.json();
+  const box = document.getElementById("liveBox");
+
+  if (!data.live) {
+    box.innerHTML = `
+      <input id="liveSubject" class="p-2 border rounded" placeholder="Enter subject">
+      <button onclick="startLive()" class="px-4 py-2 bg-green-600 text-white rounded mt-2">Start Live Class</button>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <p class="text-lg font-semibold">LIVE: ${data.subject}</p>
+    <a href="${data.meet_link}" target="_blank" class="px-4 py-2 bg-indigo-600 text-white rounded mt-2 inline-block">Join Meet</a>
+    <button onclick="endLive()" class="px-4 py-2 bg-red-600 text-white rounded mt-2">End Live Class</button>
+  `;
+}
+
+async function startLive() {
+  const subject = document.getElementById("liveSubject").value || "Live Class";
+  const form = new FormData();
+  form.append("subject", subject);
+  
+  await fetch("/api/live/start", {
+    method: "POST",
+    body: form
+  });
+
+  checkLiveClass();
+}
+
+async function endLive() {
+  await fetch("/api/live/end", { method: "POST" });
+  checkLiveClass();
+}
+
+checkLiveClass();
+
 // Load bookings
 loadBookings();
+checkLiveClass();
 
 </script>
 

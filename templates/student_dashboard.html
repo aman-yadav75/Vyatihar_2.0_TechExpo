@@ -4,7 +4,8 @@
   <title>Student Dashboard | Vyatihar</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 min-h-screen text-white">
+<body
+    class="bg-gradient-to-b from-pink-100 via-pink-100 to-purple-200 min-h-screen text-gray-800">
 
   <!-- NAVBAR -->
   <nav class="backdrop-blur-xl bg-white/10 border-b border-white/20 p-4 flex justify-between items-center shadow-lg">
@@ -16,6 +17,11 @@
   </nav>
 
   <div class="max-w-7xl mx-auto p-6 mt-6">
+    <!-- LIVE CLASS INDICATOR -->
+<div id="liveStudentBox" class="p-4 bg-purple-100 border-l-4 border-purple-600 rounded-xl mb-8 shadow">
+  Checking live class...
+</div>
+
 
     <!-- ANNOUNCEMENTS CARD -->
     <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl mb-8">
@@ -75,6 +81,32 @@
     </div>
 
   </div>
+
+
+  <script>
+async function checkStudentLive() {
+  const res = await fetch("/api/live/current");
+  const data = await res.json();
+  const box = document.getElementById("liveStudentBox");
+
+  if (!data.live) {
+    box.innerHTML = `<p>No live class currently.</p>`;
+    return;
+  }
+
+  box.innerHTML = `
+    <p class="font-semibold">📡 Live Class Going On!</p>
+    <p class="text-sm opacity-80">${data.subject} • by ${data.teacher_name}</p>
+    <a href="${data.meet_link}" target="_blank" 
+       class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl inline-block mt-2 shadow">
+      Join Live Class
+    </a>
+  `;
+}
+
+setInterval(checkStudentLive, 5000);
+checkStudentLive();
+</script>
 
 </body>
 </html>

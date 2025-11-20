@@ -1205,7 +1205,7 @@ function navigateTo(page) {
   <button id="continueLearningBtn" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
     Continue Learning
   </button>
-  <button id="startLiveBtn" onclick="startLiveClass('${subject.name}')" 
+ <button onclick="openLiveClass('${subject.meetLink}')"
     class="w-full py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
     🔴 Start Live Class
   </button>
@@ -2248,6 +2248,14 @@ async function checkLiveClass() {
   }
 }
 
+function openLiveClass(meetLink) {
+    if (!meetLink) {
+        alert("Meet link not available!");
+        return;
+    }
+    window.open(meetLink, "_blank");
+}
+
 
 function showLiveNotification(data) {
   if (window.alreadyShown) return;
@@ -2420,7 +2428,24 @@ document.addEventListener("DOMContentLoaded", () => {
     navigateTo("teacher-dashboard");
     return;
   }
+  if (path === "/subjects") {
+  navigateTo("subjects");
+  return;
+}
 
+  if (path === "/projects") {
+  navigateTo("projects");
+  return;
+}
+  if (path === "/rewards") {
+  navigateTo("rewards");
+  return;
+}
+
+  if (path === "/match") {
+  navigateTo("match");
+  return;
+}
   // 2️⃣ Default fallback → HOME
   navigateTo("home");
 });

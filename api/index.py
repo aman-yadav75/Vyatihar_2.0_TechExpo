@@ -111,6 +111,16 @@ class Booking(db.Model):
     teacher = db.relationship("TeacherProfile", backref="bookings")
     student = db.relationship("User", foreign_keys=[student_id])
 
+class LiveClass(db.Model):
+    __tablename__ = "live_classes"
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher_profiles.id"), nullable=False)
+    subject = db.Column(db.String(200))
+    meet_link = db.Column(db.String(500))
+    is_live = db.Column(db.Boolean, default=True)
+    started_at = db.Column(db.DateTime, default=db.func.now())
+
+
 class SavedTeacher(db.Model):
     __tablename__ = "saved_teachers"
     id = db.Column(db.Integer, primary_key=True)
@@ -532,8 +542,7 @@ def become_teacher_page():
 # ==================================
 # 🧠 AI STUDY ASSISTANT
 # ==================================
-from openai import OpenAI
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
 
 @app.route('/ask_ai', methods=['POST'])
 def ask_ai():
@@ -990,6 +999,66 @@ def reset_password():
     db.session.commit()
 
     return {"ok": True, "message": "Password reset successful"}
+
+@app.route("/api/live/start", methods=["POST"])
+@login_required
+def start_live():
+    profile = TeacherProfile.query.filter_by(user_id=session["user_id"]).first()
+    if not profile:
+        return jsonify({"error": "not_a_teacher"}), 403
+
+    subject = request.form.get("subject", "Live Class")
+    meet_link = generate_meet_link()
+
+    live = LiveClass(
+        teacher_id=profile.id,
+        subject=subject,
+        meet_link=meet_link,
+        is_live=True
+    )
+
+    db.session.add(live)
+    db.session.commit()
+
+    return jsonify({
+        "ok": True,
+        "subject": subject,
+        "meet_link": meet_link,
+        "live_id": live.id
+    })
+
+
+@app.route("/api/live/end", methods=["POST"])
+@login_required
+def end_live():
+    profile = TeacherProfile.query.filter_by(user_id=session["user_id"]).first()
+
+    live = LiveClass.query.filter_by(teacher_id=profile.id, is_live=True).first()
+    if not live:
+        return jsonify({"error": "no_live_class"}), 404
+
+    live.is_live = False
+    db.session.commit()
+
+    return jsonify({"ok": True})
+
+
+@app.route("/api/live/current")
+def get_current_live():
+    live = LiveClass.query.filter_by(is_live=True).order_by(LiveClass.started_at.desc()).first()
+    
+    if not live:
+        return jsonify({"live": False})
+
+    teacher = TeacherProfile.query.get(live.teacher_id)
+
+    return jsonify({
+        "live": True,
+        "subject": live.subject,
+        "meet_link": live.meet_link,
+        "teacher_name": teacher.user.username
+    })
+
 
 # ===============================
 # 🤖 AI ASSISTANT PAGE ROUTE
