@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teacher Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow p-4 flex justify-between">
+    <h1 class="text-2xl font-bold">👨‍🏫 Teacher Dashboard</h1>
+    <div>
+      <span class="mr-4 font-semibold">Hi, {{ user.username }} Sir</span>
+      <a href="/logout" class="text-red-600 font-semibold">Logout</a>
+    </div>
+  </nav>
+
+  <div class="max-w-6xl mx-auto p-6">
+
+    <!-- PROFILE SECTION -->
+    <div class="bg-white p-6 rounded-xl shadow mb-6">
+      <h2 class="text-xl font-semibold mb-3">📄 Your Teacher Profile</h2>
+
+      {% if profile %}
+        <p><b>Bio:</b> {{ profile.bio }}</p>
+        <p><b>Subjects:</b> {{ profile.subjects }}</p>
+        <p><b>Experience:</b> {{ profile.experience_years }} years</p>
+        <p><b>Availability:</b> {{ profile.availability }}</p>
+      {% else %}
+        <p class="text-gray-600">You are not a verified teacher yet.</p>
+        <a href="/become-teacher" class="text-blue-600 underline">Apply to Become a Teacher →</a>
+      {% endif %}
+    </div>
+
+    <!-- BOOKINGS LIST -->
+    <div class="bg-white p-6 rounded-xl shadow">
+      <h2 class="text-xl font-bold mb-4">📘 Student Booking Requests</h2>
+      <div id="bookingList" class="space-y-4 text-gray-800">
+        <p>Loading bookings...</p>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+
+// Copy text to clipboard
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("Copied!");
+  } catch {
+    prompt("Copy manually:", text);
+  }
+}
+
+// Fetch bookings
+async function loadBookings() {
+  const res = await fetch("/api/teacher/bookings");
+  const data = await res.json();
+  const box = document.getElementById("bookingList");
+  box.innerHTML = "";
+
+  if (!Array.isArray(data) || data.length === 0) {
+    box.innerHTML = "<p class='text-gray-600'>No bookings yet.</p>";
+    return;
+  }
+
+  data.forEach(b => {
+    const timeText = b.requested_time ? new Date(b.requested_time).toLocaleString() : "Not provided";
+
+    const card = document.createElement("div");
+    card.className = "p-4 border rounded-xl bg-gray-50";
+
+    card.innerHTML = `
+      <div class="flex justify-between items-start">
+        
+        <div>
+          <div class="text-lg font-semibold">
+            ${b.student_name}
+            ${b.student_email ? `<span class='text-sm text-gray-500'>(${b.student_email})</span>` : ""}
+          </div>
+
+          <div class="text-sm text-gray-600 mt-1">${b.subject} • ${timeText}</div>
+
+          <div class="text-sm mt-2">
+            Status: <span class="font-semibold text-purple-700">${b.status}</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-end gap-2">
+
+          ${
+            b.meet_link 
+            ? `
+              <a href="${b.meet_link}" target="_blank" class="px-3 py-2 bg-indigo-600 text-white rounded">Join Meet</a>
+              <button class="px-3 py-2 border rounded" onclick="copyToClipboard('${b.meet_link}')">Copy Link</button>
+            `
+            : `
+              <button class="px-3 py-2 bg-yellow-500 text-white rounded" onclick="addMeet(${b.id})">
+                Add Meet Link
+              </button>
+            `
+          }
+
+          <div class="flex gap-2">
+            <button class="px-3 py-2 bg-green-600 text-white rounded" onclick="takeAction(${b.id}, 'accept')">Accept</button>
+            <button class="px-3 py-2 bg-red-600 text-white rounded" onclick="takeAction(${b.id}, 'reject')">Reject</button>
+            <button class="px-3 py-2 bg-gray-700 text-white rounded" onclick="takeAction(${b.id}, 'complete')">Complete</button>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+    box.appendChild(card);
+  });
+}
+
+// Add meet link manually or auto-generate
+async function addMeet(id) {
+  const link = prompt("Enter Google Meet link OR leave empty to auto-generate:");
+  await takeAction(id, "accept", link || "");
+}
+
+// Accept / Reject / Complete
+async function takeAction(id, action, meet_link = "") {
+  const form = new FormData();
+  form.append("action", action);
+  form.append("meet_link", meet_link);
+
+  const res = await fetch(`/api/teacher/booking/${id}/action`, {
+    method: "POST",
+    body: form
+  });
+
+  const data = await res.json();
+
+  if (data.error) {
+    alert("Error: " + data.error);
+    return;
+  }
+
+  if (data.meet_link) {
+    alert(`Status: ${data.status}\nMeet Link: ${data.meet_link}`);
+  } else {
+    alert(`Status: ${data.status}`);
+  }
+
+  loadBookings();
+}
+
+// Load bookings
+loadBookings();
+
+</script>
+
+</body>
+</html>

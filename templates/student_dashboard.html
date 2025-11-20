@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard | Vyatihar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 min-h-screen text-white">
+
+  <!-- NAVBAR -->
+  <nav class="backdrop-blur-xl bg-white/10 border-b border-white/20 p-4 flex justify-between items-center shadow-lg">
+    <h1 class="text-2xl font-bold tracking-wide">🎓 Student Dashboard</h1>
+    <div>
+      <span class="mr-5 text-lg font-semibold">Hi, {{ user.username }}</span>
+      <a href="/logout" class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl text-white font-semibold shadow">Logout</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto p-6 mt-6">
+
+    <!-- ANNOUNCEMENTS CARD -->
+    <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 shadow-xl mb-8">
+      <h2 class="text-2xl font-semibold mb-3">📢 Latest Announcements</h2>
+      <div class="max-h-40 overflow-y-auto space-y-2">
+        {% for a in announcements %}
+          <p class="bg-white/10 p-3 rounded-xl border border-white/20">{{ a.message }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Browse Teachers -->
+      <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-bold mb-2">📚 Browse Teachers</h3>
+        <p class="opacity-90 mb-3">Find your perfect teacher by subject, experience & availability.</p>
+        <a href="/teachers" class="px-5 py-2 bg-blue-500 hover:bg-blue-600 rounded-xl font-semibold shadow">View Teachers →</a>
+      </div>
+
+      <!-- Bookings -->
+      <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-bold mb-2">📝 Your Bookings</h3>
+        <p class="opacity-90 mb-3">Check meeting status, timings & teacher responses.</p>
+        <a href="/api/student/bookings" class="px-5 py-2 bg-green-500 hover:bg-green-600 rounded-xl font-semibold shadow">See Bookings →</a>
+      </div>
+
+      <!-- AI Match -->
+      <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-bold mb-2">🤖 AI Teacher Match</h3>
+        <p class="opacity-90 mb-3">Let AI find the perfect teacher for your learning style.</p>
+        <a href="/match" class="px-5 py-2 bg-purple-500 hover:bg-purple-600 rounded-xl font-semibold shadow">Try Now →</a>
+      </div>
+
+      <!-- Subjects -->
+      <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-bold mb-2">📘 Subjects</h3>
+        <p class="opacity-90 mb-3">Explore subjects available on Vyatihar.</p>
+        <a href="/subjects" class="px-5 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-xl font-semibold shadow">Explore →</a>
+      </div>
+
+      <!-- Projects -->
+      <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-bold mb-2">🚀 Projects</h3>
+        <p class="opacity-90 mb-3">Browse tech projects and learn hands-on skills.</p>
+        <a href="/projects" class="px-5 py-2 bg-teal-500 hover:bg-teal-600 rounded-xl font-semibold shadow">View →</a>
+      </div>
+
+      <!-- Rewards -->
+      <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-bold mb-2">🏅 Rewards</h3>
+        <p class="opacity-90 mb-3">Earn coins from activities and redeem rewards.</p>
+        <a href="/rewards" class="px-5 py-2 bg-orange-500 hover:bg-orange-600 rounded-xl font-semibold shadow">Check Rewards →</a>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

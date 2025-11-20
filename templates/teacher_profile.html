@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ teacher.name }} | Teacher Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+  <nav class="bg-white shadow p-4 flex justify-between">
+    <h1 class="text-2xl font-bold text-purple-600">Teacher Profile</h1>
+    <a href="/teachers" class="text-blue-600">⬅ Back</a>
+  </nav>
+
+  <div class="max-w-3xl mx-auto bg-white p-8 mt-8 rounded-xl shadow">
+    
+    <!-- TEACHER DETAILS -->
+    <h2 class="text-3xl font-bold text-purple-700">{{ teacher.name }}</h2>
+
+    <p class="text-gray-600 mt-4"><b>Bio:</b> {{ teacher.bio }}</p>
+    <p class="text-gray-600 mt-2"><b>Experience:</b> {{ teacher.experience_years }} years</p>
+    <p class="text-gray-600 mt-2"><b>Subjects:</b> {{ teacher.subjects }}</p>
+    <p class="text-gray-600 mt-2"><b>Availability:</b> {{ teacher.availability }}</p>
+    <p class="text-gray-600 mt-2"><b>Verified:</b> {{ "Yes" if teacher.verified else "No" }}</p>
+
+    <!-- LOGIN NOTICE FOR NON-LOGGED USERS -->
+    {% if not session.get('user_id') %}
+    <div class="mt-6 p-4 bg-purple-100 border border-purple-300 rounded-xl">
+      <p class="text-purple-700 font-semibold">You need to login to book this teacher.</p>
+      <a href="/login"
+         class="mt-2 inline-block px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700 transition">
+         Login Now
+      </a>
+    </div>
+    {% else %}
+
+    <!-- BOOKING FORM -->
+    <div class="mt-10 p-6 bg-purple-50 rounded-xl shadow">
+      <h2 class="text-2xl font-bold mb-4 text-purple-700">📚 Book This Teacher</h2>
+
+      <form id="bookForm">
+        <input type="hidden" name="teacher_id" value="{{ teacher.id }}">
+
+        <label class="block mb-2 font-medium">Subject</label>
+        <input name="subject" class="w-full p-3 border rounded-lg mb-4" required>
+
+        <label class="block mb-2 font-medium">Preferred Time</label>
+        <input type="datetime-local" name="requested_time" class="w-full p-3 border rounded-lg mb-4">
+
+        <button type="submit"
+          class="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700">
+          Request Booking
+        </button>
+      </form>
+
+      <p id="result" class="mt-4 font-semibold"></p>
+    </div>
+
+    {% endif %}
+
+  </div>
+
+<script>
+document.getElementById("bookForm")?.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  let formData = new FormData(this);
+
+  let res = await fetch("/api/teacher/book", {
+    method: "POST",
+    body: formData
+  });
+
+  let data = await res.json();
+
+  if (data.ok) {
+    document.getElementById("result").innerHTML =
+      "✅ Booking Request Sent Successfully!";
+  } else {
+    document.getElementById("result").innerHTML =
+      "❌ Error: " + data.error;
+  }
+});
+</script>
+
+</body>
+</html>

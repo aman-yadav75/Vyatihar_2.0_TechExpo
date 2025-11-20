@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<script>
+  window.initialAuthCheckDone = false;
+
+  fetch("/api/check-session")
+    .then(res => res.json())
+    .then(data => {
+      if (data.logged_in === true) {
+        state.isAuthenticated = true;
+      }
+      window.initialAuthCheckDone = true;
+    });
+</script>
+
+<script>
+  window.pageFromServer = "{{ page|default('') }}";
+</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vyatihar - Where Ideas Meet</title>
@@ -36,10 +54,24 @@
     }
     
     .glass {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(12px) saturate(1.1);
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 6px 20px rgba(2,6,23,0.08);
     }
+    html.dark .glass {
+    background: rgba(20,20,30,0.42);
+    border: 1px solid rgba(255,255,255,0.06);
+    }
+   .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
+
+
     
     .floating {
       animation: float 3s ease-in-out infinite;
@@ -485,101 +517,120 @@ html.dark .testimonial-card {
 
  <div id="app" style="display: none;">
 <!-- FIXED NAVBAR -->
-<nav id="mainNav" class="fixed top-0 left-0 w-full bg-[#2f3241] shadow-md z-50">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+<nav class="fixed top-0 left-0 w-full backdrop-blur-xl bg-black/40 border-b border-white/10 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <!-- LEFT: Logo -->
-    <a href="/" class="flex items-center space-x-2">
-      <img src="/static/assets/vyatihar_logo.jpeg" class="h-10 w-10 rounded-full object-cover">
-      <span class="text-white text-xl font-bold">Vyatihar</span>
+    <!-- LEFT: LOGO -->
+    <a href="/" class="flex items-center gap-3">
+      <img src="/static/assets/vyatihar_logo.jpeg" class="h-10 w-10 rounded-full shadow-lg">
+      <span class="text-white text-2xl font-bold tracking-wide">Vyatihar</span>
     </a>
 
     <!-- DESKTOP MENU -->
-  <ul class="hidden md:flex items-center space-x-6 text-gray-300 font-medium">
-    <li><a id="navHome" class="nav-link" href="/">Home</a></li>
-    <li><a id="navDashboard" class="nav-link" href="/dashboard">Dashboard</a></li>
-    <li><a id="navSubjects" class="nav-link" href="/subjects">Subjects</a></li>
-   <li><a id="navAI" class="nav-link" href="/match">AI Match</a></li>
-<li><a id="navProjects" class="nav-link" href="/projects">Projects</a></li>
+<ul class="hidden md:flex gap-8 text-gray-300 font-semibold">
 
-    <li><a id="navRewards" class="nav-link" href="/rewards">Rewards</a></li>
-  </ul>
+  <li><a href="#" id="navHome" onclick="navigateTo('home')" class="hover:text-white transition">Home</a></li>
+  <li><a href="#" id="navTeachers" onclick="navigateTo('teachers')" class="hover:text-white transition">Teachers</a></li>
+  <li><a href="#" id="navSubjects" onclick="navigateTo('subjects')" class="hover:text-white transition">Subjects</a></li>
+  <li><a href="#" id="navProjects" onclick="navigateTo('projects')" class="hover:text-white transition">Projects</a></li>
+  <li><a href="#" id="navRewards" onclick="navigateTo('rewards')" class="hover:text-white transition">Rewards</a></li>
 
-    <!-- RIGHT BUTTONS (Desktop only) -->
-    <div class="hidden md:flex items-center space-x-3">
-      <button id="authButton" class="px-5 py-2 bg-indigo-500 text-white rounded-lg shadow">
-  Login
-</button>
+  <!-- ⭐ NEW AI ASSISTANT LINK -->
+  <li><a href="#" id="navAssistant" onclick="navigateTo('assistant')" class="hover:text-white transition">AI Assistant</a></li>
+
+</ul>
 
 
-      <a href="/drive/connect" class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow flex items-center space-x-2">
-        <span>🔐</span><span>Connect Drive</span>
+
+
+    <!-- RIGHT BUTTONS -->
+    <div class="hidden md:flex items-center gap-4">
+
+      <!-- Login Button -->
+     {% if session.get('user_id') is none %}
+    <a href="#"
+   onclick="navigateTo('login')"
+   class="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow hover:scale-105 transition">
+   Login
+</a>
+
+      {% else %}
+      
+      <!-- Teacher Dashboard -->
+      {% if session.get('role') == 'teacher' %}
+      <a href="/teacher-dashboard"
+         class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
+         Teacher Panel
+      </a>
+      {% endif %}
+
+      <!-- Logout -->
+      <a href="/logout"
+         class="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition">
+         Logout
       </a>
 
-      <button id="themeToggle" class="text-yellow-300 text-xl">🌙</button>
-      <button id="enable-sound" class="px-3 py-1 bg-green-600 text-white rounded text-sm">
-  Enable Sound
-</button>
+      {% endif %}
 
+      <!-- Theme Toggle -->
+      <button id="themeToggle" class="text-white text-2xl hover:opacity-70">🌙</button>
     </div>
 
     <!-- MOBILE MENU BUTTON -->
-    <button id="menuToggle" class="md:hidden text-white text-3xl">
-      ☰
-    </button>
+    <button id="mobileBtn" class="md:hidden text-white text-3xl">☰</button>
+
   </div>
- 
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="hidden md:hidden flex flex-col bg-black/60 backdrop-blur-xl border-t border-white/10 p-6 text-white">
 
-  <!-- MOBILE DROPDOWN -->
-  <div id="mobileMenu" class="hidden flex-col bg-[#2f3241] text-white px-4 py-4 space-y-4 md:hidden">
+ <a id="navHomeMobile" href="#" onclick="navigateTo('home')" class="py-2 hover:text-purple-400">Home</a>
 
-    <a id="navHomeMobile" class="nav-link block" href="/">Home</a>
-    <a id="navDashboardMobile" class="nav-link block" href="/dashboard">Dashboard</a>
-    <a id="navSubjectsMobile" class="nav-link block" href="/subjects">Subjects</a>
-    <a id="navAIMobile" class="nav-link block" href="/match">AI Match</a>
-<a id="navProjectsMobile" class="nav-link block" href="/projects">Projects</a>
+<a id="navTeachersMobile" href="#" onclick="navigateTo('teachers')" class="py-2 hover:text-purple-400">Teachers</a>
 
-    <a id="navRewardsMobile" class="nav-link block" href="/rewards">Rewards</a>
+<a id="navSubjectsMobile" href="#" onclick="navigateTo('subjects')" class="py-2 hover:text-purple-400">Subjects</a>
 
-    <a id="loginButtonMobile" href="/login" class="block bg-indigo-500 text-center py-2 rounded-lg">Login</a>
+<a id="navProjectsMobile" href="#" onclick="navigateTo('projects')" class="py-2 hover:text-purple-400">Projects</a>
 
-    <a href="/drive/connect" class="block bg-blue-600 text-center py-2 rounded-lg">
-      🔐 Connect Drive
+<a id="navRewardsMobile" href="#" onclick="navigateTo('rewards')" class="py-2 hover:text-purple-400">Rewards</a>
+
+<a id="navMatchMobile" href="#" onclick="navigateTo('match')" class="py-2 hover:text-purple-400">AI Match</a>
+
+<!-- ⭐ NEW AI ASSISTANT (Mobile Version) -->
+<a id="navAssistantMobile" href="#" onclick="navigateTo('assistant')" class="py-2 hover:text-purple-400">AI Assistant</a>
+
+  <!-- Login / Logout -->
+  {% if not session.get('user_id') %}
+    <a id="loginButtonMobile" href="#" onclick="navigateTo('login')" class="py-3 bg-purple-600 rounded-lg text-center mt-3">
+      Login
     </a>
-  </div>
-    <select id="languageSelect" class="bg-[#2f3241] text-white border px-2 py-1 rounded">
-  <option value="en">English</option>
-  <option value="hi">हिन्दी</option>
-  <option value="mr">मराठी</option>
-  <option value="ta">தமிழ்</option>
-</select>
+  {% else %}
+    <a href="/logout" class="py-3 bg-red-600 rounded-lg text-center mt-3">
+      Logout
+    </a>
+  {% endif %}
+</div>
+
 
 </nav>
+
+<script>
+  const btn = document.getElementById("mobileBtn");
+  const menu = document.getElementById("mobileMenu");
+
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+
+
+<main id="content" class="min-h-screen"></main>
 </div>
 
 
-    <main id="content" class="min-h-screen"></main>
 
 
-    <!-- 💬 Vyatihar Study Assistant -->
-<div class="max-w-3xl mx-auto mt-20 bg-white rounded-2xl shadow-lg p-8 fade-in">
-  <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
-    🤖 Vyatihar Study Assistant
-  </h3>
-  <p class="text-gray-600 mb-3">Ask anything and get instant help from Vyatihar AI!</p>
 
-  <textarea id="ai-question" rows="3"
-    placeholder="Ask your question here (e.g., Explain backpropagation in simple terms)"
-    class="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:ring-2 focus:ring-purple-400 outline-none transition"></textarea>
 
-  <button onclick="askAI()" class="gradient-bg text-white px-6 py-3 rounded-lg hover:shadow-lg transition font-semibold">
-    Ask Now 💬
-  </button>
-
-  <div id="ai-answer"
-    class="mt-6 bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 whitespace-pre-wrap min-h-[80px]">
-  </div>
-</div>
 
 
     <footer class="glass mt-12 py-8">
@@ -792,6 +843,8 @@ function applyLanguage(lang) {
 </script>
 
 <script>
+
+
 window.addEventListener('load', function() {
   setTimeout(function() {
 
@@ -810,7 +863,7 @@ window.addEventListener('load', function() {
       }
     });
 
-    handleDirectURL();
+
 
 
   }, 1500);
@@ -822,15 +875,16 @@ window.addEventListener('load', function() {
       var userData = localStorage.getItem('vyatihar_user');
       var coins = localStorage.getItem('vyatihar_coins');
       var projects = localStorage.getItem('vyatihar_projects');
+    
       
       if (userData) {
-        state.isAuthenticated = true;
         state.user = JSON.parse(userData);
         state.coins = parseInt(coins || '100');
         state.projects = JSON.parse(projects || '[]');
         updateAuthUI();
       }
     }
+
 
     function updateAuthUI() {
       var authButton = document.getElementById('authButton');
@@ -857,29 +911,60 @@ window.addEventListener('load', function() {
       navigateTo('home');
     }
 
-    function navigateTo(page) {
-      state.currentPage = page;
-      var content = document.getElementById('content');
-      content.innerHTML = '';
-      content.className = 'min-h-screen fade-in';
-      
-      if (page === 'home') renderHome();
-      else if (page === 'login') renderLogin();
-      else if (page === 'signup') renderSignup();
-      else if (page === 'dashboard') renderDashboard();
-      else if (page === 'subjects') renderSubjects();
-      else if (page === 'match') renderMatch();
-      else if (page === 'projects') renderProjects();
-      else if (page === 'rewards') renderRewards();
-      else renderHome();
-        // Re-apply language after page re-renders
+    let authLoaded = false;
+
+// Wait for server session to finish loading
+fetch("/api/check-session")
+  .then(res => res.json())
+  .then(data => {
+    if (data.logged_in) {
+      state.isAuthenticated = true;
+    }
+    authLoaded = true;
+  });
+
+function navigateTo(page) {
+  
+// Wait for server auth
+  if (!authLoaded) {
+      setTimeout(() => navigateTo(page), 50);
+      return;
+  }
+
+  const protectedPages = ["dashboard", "subjects", "projects", "rewards", "match"];
+  
+  if (protectedPages.includes(page) && !state.isAuthenticated) {
+      window.location.href = "/login";
+      return;
+  }
+
+
+  state.currentPage = page;
+  var content = document.getElementById('content');
+  content.innerHTML = '';
+  content.className = 'min-h-screen fade-in';
+
+  if (page === 'home') renderHome();
+  else if (page === 'login') renderLogin();
+  else if (page === 'signup') renderSignup();
+  else if (page === 'dashboard') renderDashboard();
+  else if (page === 'subjects') renderSubjects();
+  else if (page === 'match') renderMatch();
+  else if (page === 'projects') renderProjects();
+  else if (page === 'rewards') renderRewards();
+  else if (page === "become-teacher") renderBecomeTeacher();
+  else if (page === "teacher-dashboard") renderTeacherDashboard();
+  else if (page === 'assistant') window.location.href = "/assistant";
+  else renderHome();
+
   setTimeout(() => {
     const saved = localStorage.getItem('vy_lang') || 'en';
     applyLanguage(saved);
   }, 30);
 }
 
-    
+
+
 
     function renderHome() {
       document.getElementById('content').innerHTML = `
@@ -1019,7 +1104,8 @@ window.addEventListener('load', function() {
               <h2 id="loginTitle" class="text-3xl font-bold">Welcome Back</h2>
               <p class="text-gray-600 mt-2">Login to continue your learning journey</p>
             </div>
-            <form method="POST" action="/login" class="space-y-4">
+            <form method="POST" action="/login" onsubmit="loginSuccess()" class="space-y-4">
+
 
   <input name="email" type="email" placeholder="Email" required
     class="w-full px-4 py-3 rounded-lg border border-gray-300 
@@ -1044,22 +1130,7 @@ window.addEventListener('load', function() {
       `;
     }
 
-    function handleLogin(e) {
-      e.preventDefault();
-      var email = document.getElementById('loginEmail').value;
-      var userData = {
-        name: 'Demo User',
-        email: email,
-        joinedDate: new Date().toISOString()
-      };
-      localStorage.setItem('vyatihar_user', JSON.stringify(userData));
-      localStorage.setItem('vyatihar_coins', '100');
-      state.isAuthenticated = true;
-      state.user = userData;
-      state.coins = 100;
-      updateAuthUI();
-      navigateTo('dashboard');
-    }
+
 
     function renderSignup() {
       document.getElementById('content').innerHTML = `
@@ -1098,145 +1169,15 @@ window.addEventListener('load', function() {
       `;
     }
 
-    function handleSignup(e) {
-      e.preventDefault();
-      var userData = {
-        name: document.getElementById('signupName').value,
-        email: document.getElementById('signupEmail').value,
-        phone: document.getElementById('signupPhone').value,
-        state: document.getElementById('signupState').value,
-        city: document.getElementById('signupCity').value,
-        joinedDate: new Date().toISOString()
-      };
-      localStorage.setItem('vyatihar_user', JSON.stringify(userData));
-      localStorage.setItem('vyatihar_coins', '100');
-      state.isAuthenticated = true;
-      state.user = userData;
-      state.coins = 100;
-      updateAuthUI();
-      navigateTo('dashboard');
-    }
-
-    function renderDashboard() {
-      if (!state.isAuthenticated) {
-        navigateTo('login');
-        return;
-      }
-
-      var subjectsHTML = '';
-      for (var i = 0; i < 3 && i < state.subjects.length; i++) {
-        var subject = state.subjects[i];
-        subjectsHTML += `
-          <div class="bg-white rounded-xl p-4 border-2 border-gray-100 hover:border-purple-300 transition cursor-pointer" onclick="navigateTo('subjects')">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="text-4xl">${subject.icon}</div>
-              <div>
-                <div class="font-bold">${subject.name}</div>
-                <div class="text-sm text-gray-600">${subject.students} students</div>
-              </div>
-            </div>
-            <div class="mb-2">
-              <div class="flex justify-between text-sm mb-1">
-                <span class="text-gray-600">Progress</span>
-                <span class="font-semibold">${subject.progress}%</span>
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="gradient-bg h-2 rounded-full" style="width: ${subject.progress}%"></div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      document.getElementById('content').innerHTML = `
-        <div class="max-w-7xl mx-auto px-4 py-8">
-          <div class="mb-8">
-           <h1 class="text-4xl font-bold">
-  <span id="welcomeText">Welcome back, </span><span id="userName">${state.user.name}!</span>
-</h1>
-
-            <p class="text-gray-600 mt-2">Continue your learning journey</p>
-          </div>
-
-          <div class="grid md:grid-cols-4 gap-6 mb-8">
-            <div class="glass rounded-2xl p-6 gradient-bg text-white">
-              <div class="text-3xl mb-2">👥</div>
-              <div class="text-3xl font-bold">1,234</div>
-              <div class="text-purple-100">Students Online</div>
-            </div>
-            <div class="glass rounded-2xl p-6 gradient-bg text-white">
-              <div class="text-3xl mb-2">📚</div>
-              <div class="text-3xl font-bold">8</div>
-              <div class="text-purple-100">Courses Joined</div>
-            </div>
-            <div class="glass rounded-2xl p-6 gradient-bg text-white">
-              <div class="text-3xl mb-2">🏆</div>
-              <div class="text-3xl font-bold">${state.coins}</div>
-              <div class="text-purple-100" id="coinsLabel">Total Coins</div>
-            </div>
-            <div class="glass rounded-2xl p-6 gradient-bg text-white">
-              <div class="text-3xl mb-2">⭐</div>
-              <div class="text-3xl font-bold">5</div>
-              <div class="text-purple-100">Badges Earned</div>
-            </div>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <div class="glass rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
-                ✨ Your AI Match
-              </h3>
-              <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-4">
-                <p class="font-semibold mb-3">Suggested Study Partner:</p>
-                <div class="flex items-center gap-4 mb-4">
-                  <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-2xl">P</div>
-                  <div>
-                    <div class="font-bold text-lg">Priya Sharma</div>
-                    <div class="text-sm text-gray-600">Interests: AI, Web Development</div>
-                    <div class="text-sm text-yellow-600">⭐ 4.8 Rating</div>
-                  </div>
-                </div>
-                <button onclick="navigateTo('match')" class="w-full py-2 gradient-bg text-white rounded-lg hover:shadow-lg transition">
-                  View All Matches
-                </button>
-              </div>
-            </div>
-
-            <div class="glass rounded-2xl p-6">
-              <h3 class="text-xl font-bold mb-4">📅 Upcoming Sessions</h3>
-              <div class="space-y-3">
-                <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                  <div class="text-2xl">🤖</div>
-                  <div class="flex-1">
-                    <div class="font-semibold">ML Doubt Session</div>
-                    <div class="text-sm text-gray-600">Today, 4:00 PM</div>
-                  </div>
-                  <button class="px-3 py-1 text-sm gradient-bg text-white rounded">Join</button>
-                </div>
-                <div class="flex items-center gap-3 p-3 bg-pink-50 rounded-lg">
-                  <div class="text-2xl">💰</div>
-                  <div class="flex-1">
-                    <div class="font-semibold">Finance Group Study</div>
-                    <div class="text-sm text-gray-600">Tomorrow, 6:00 PM</div>
-                  </div>
-                  <button class="px-3 py-1 text-sm gradient-bg text-white rounded">Join</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="glass rounded-2xl p-6">
-            <h3 class="text-xl font-bold mb-4">📖 Continue Learning</h3>
-            <div class="grid md:grid-cols-3 gap-4">
-              ${subjectsHTML}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
 
     function renderSubjects() {
+
+  // 🔐 Require login for this page
+  if (!state.isAuthenticated) {
+    navigateTo("login");
+    return;
+  }
+
       var subjectsHTML = '';
       for (var i = 0; i < state.subjects.length; i++) {
         var subject = state.subjects[i];
@@ -1292,7 +1233,13 @@ window.addEventListener('load', function() {
       `;
     }
 
-    function renderMatch() {
+    function renderRewards() {
+
+  // 🔐 Require login
+  if (!state.isAuthenticated) {
+    navigateTo("login");
+    return;
+  }
       var matchesHTML = '';
       for (var i = 0; i < state.matches.length; i++) {
         var match = state.matches[i];
@@ -1371,6 +1318,12 @@ window.addEventListener('load', function() {
     }
 
     function renderProjects() {
+
+  // 🔐 Require login
+  if (!state.isAuthenticated) {
+    navigateTo("login");
+    return;
+  }
       var projectsHTML = '';
       for (var i = 0; i < state.projects.length; i++) {
         var project = state.projects[i];
@@ -1538,6 +1491,7 @@ window.addEventListener('load', function() {
         </div>
       `;
     }
+
 
     function earnCoins() {
       state.coins += 10;
@@ -1708,8 +1662,7 @@ function initClient() {
   });
 }
 
-// Run this once site loads
-window.onload = loadGoogleAPI;
+
 
 // Add Function to Upload File to Drive
 
@@ -1790,11 +1743,7 @@ async function handleGoogleSignIn() {
   }
 }
 
-// attach to button (make sure button exists in DOM)
-document.addEventListener('DOMContentLoaded', () => {
-  const signBtn = document.getElementById('googleSignIn');
-  if (signBtn) signBtn.addEventListener('click', handleGoogleSignIn);
-});
+
 
 
 // ---------- Upload recording to Drive ----------
@@ -1845,6 +1794,362 @@ async function uploadRecording(subjectName) {
   };
 
   fileInput.click();
+}
+
+async function checkTeacherStatus() {
+  const res = await fetch("/api/teacher/me");
+  const data = await res.json();
+
+  if (!data.error) {
+    document.getElementById("teacherDashboardBtn").classList.remove("hidden");
+  }
+}
+checkTeacherStatus();
+
+
+function loginSuccess() {
+    setTimeout(() => {
+        fetch("/api/me")
+          .then(r => r.json())
+          .then(u => {
+              localStorage.setItem("vyatihar_user", JSON.stringify(u));
+              state.user = u;
+              state.isAuthenticated = true;
+          });
+    }, 500);
+}
+
+</script>
+
+
+<!-- Add these functions in your main script (index.html) -->
+<script>
+/* ---- Helper: small glass card template ---- */
+function teacherCardHTML(t) {
+  // t: {id, name, subjects, qualifications, experience_years, bio, verified}
+  return `
+  <div class="glass rounded-2xl p-5 hover:shadow-2xl transition transform hover:-translate-y-1">
+    <div class="flex items-start gap-4">
+      <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center text-white text-xl">
+        ${t.name ? t.name.charAt(0).toUpperCase() : 'T'}
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-bold text-lg">${t.name}</div>
+            <div class="text-sm text-gray-600 mt-1">${t.subjects || '—'}</div>
+          </div>
+          <div class="text-sm ${t.verified ? 'text-green-400' : 'text-gray-400'}">
+            ${t.verified ? 'Verified' : 'Unverified'}
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-3 line-clamp-3">${t.bio || ''}</p>
+        <div class="flex gap-2 mt-4">
+          <button onclick="viewTeacher(${t.id})" class="px-4 py-2 rounded-full border border-purple-600 text-purple-600">View</button>
+          <button onclick="toggleSaveTeacher(${t.id}, this)" class="px-4 py-2 rounded-full bg-purple-600 text-white">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+/* ---- render teachers list ---- */
+async function renderTeachers() {
+  document.getElementById('content').innerHTML = `
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold">Top Teachers</h1>
+        <div>
+          <input id="teacherSearch" placeholder="Search name, subject, qualification" class="px-3 py-2 rounded-lg border"/>
+          <button onclick="loadTeachers()" class="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg">Search</button>
+        </div>
+      </div>
+      <div id="teachersGrid" class="grid md:grid-cols-3 gap-6"></div>
+    </div>
+  `;
+  await loadTeachers();
+}
+
+async function loadTeachers() {
+  const q = document.getElementById('teacherSearch') ? document.getElementById('teacherSearch').value : '';
+  const url = '/api/teachers' + (q ? '?q=' + encodeURIComponent(q) : '');
+  const res = await fetch(url);
+  const data = await res.json();
+  const grid = document.getElementById('teachersGrid');
+  grid.innerHTML = '';
+  data.forEach(t => grid.insertAdjacentHTML('beforeend', teacherCardHTML(t)));
+}
+
+/* ---- view single teacher ---- */
+async function viewTeacher(id) {
+  const res = await fetch('/api/teacher/' + id);
+  const t = await res.json();
+  document.getElementById('content').innerHTML = `
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <div class="glass p-6 rounded-2xl">
+        <div class="flex items-start gap-6">
+          <div class="w-28 h-28 rounded-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center text-white text-3xl">
+            ${t.name ? t.name.charAt(0).toUpperCase() : 'T'}
+          </div>
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold">${t.name} <span class="text-sm ml-2 ${t.verified?'text-green-400':'text-gray-400'}">${t.verified ? 'Verified' : ''}</span></h2>
+            <p class="text-gray-600 mt-2">${t.qualifications || ''}</p>
+            <p class="text-gray-600 mt-2">Subjects: ${t.subjects || '—'}</p>
+            <p class="text-gray-600 mt-2">Experience: ${t.experience_years || 0} yrs</p>
+            <div class="mt-4 flex gap-3">
+              <button onclick="openBookingModal(${t.id})" class="px-5 py-2 bg-gradient-to-br from-purple-600 to-pink-400 text-white rounded-full">Book Class</button>
+              <button onclick="toggleSaveTeacher(${t.id}, this)" class="px-5 py-2 border rounded-full">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="font-semibold">About</h3>
+          <p class="text-gray-700 mt-2">${t.bio || ''}</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ---- save teacher ---- */
+async function toggleSaveTeacher(teacherId, el) {
+  const res = await fetch('/api/teacher/save', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({teacher_id: teacherId})
+  });
+  const j = await res.json();
+  if (j.ok) {
+    el && (el.textContent = j.saved ? 'Unsave' : 'Save');
+    alert(j.saved ? 'Saved' : 'Removed from saved');
+  } else {
+    alert(j.error || 'Login required');
+  }
+}
+
+/* ---- booking modal + create booking ---- */
+function openBookingModal(teacherId) {
+  const modalHtml = `
+    <div id="booking-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+        <h3 class="text-xl font-bold mb-3">Book Class</h3>
+        <input id="booking-subject" placeholder="Subject / Topic" class="w-full px-3 py-2 border rounded mb-3"/>
+        <input id="booking-time" type="datetime-local" class="w-full px-3 py-2 border rounded mb-3"/>
+        <div class="flex gap-2 justify-end">
+          <button onclick="createBooking(${teacherId})" class="px-4 py-2 bg-purple-600 text-white rounded">Send Request</button>
+          <button onclick="document.getElementById('booking-modal').remove()" class="px-4 py-2 border rounded">Cancel</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+async function createBooking(teacherId) {
+  const subject = document.getElementById('booking-subject').value;
+  const t = document.getElementById('booking-time').value;
+  const res = await fetch('/api/teacher/book', {
+    method:'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({teacher_id: teacherId, subject: subject, requested_time: t})
+  });
+  const j = await res.json();
+  if (j.ok) {
+    alert('Booking request sent!');
+    document.getElementById('booking-modal')?.remove();
+  } else {
+    alert(j.error || 'Error sending request');
+  }
+}
+
+/* ---- become teacher form ---- */
+function renderBecomeTeacher() {
+  document.getElementById('content').innerHTML = `
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <div class="glass p-6 rounded-2xl">
+        <h2 class="text-2xl font-bold mb-4">Become a Teacher</h2>
+        <form id="becomeTeacherForm" onsubmit="submitBecomeTeacher(event)">
+          
+          <textarea name="bio" id="bt-bio" placeholder="Short bio" 
+            class="w-full border p-3 rounded mb-3"></textarea>
+
+          <input name="qualifications" id="bt-qual" placeholder="Qualifications" 
+            class="w-full border p-3 rounded mb-3" />
+
+          <input name="subjects" id="bt-sub" placeholder="Subjects (comma separated)" 
+            class="w-full border p-3 rounded mb-3" />
+
+          <input name="experience_years" id="bt-exp" placeholder="Experience years" 
+            type="number" class="w-full border p-3 rounded mb-3" />
+
+          <div class="flex gap-2 justify-end">
+            <button class="px-5 py-2 bg-purple-600 text-white rounded">
+              Apply
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+}
+
+
+async function submitBecomeTeacher(e) {
+  e.preventDefault();
+  const form = document.getElementById('becomeTeacherForm');
+  const fd = new FormData(form);
+  const res = await fetch('/api/teacher/become', {method:'POST', body: fd});
+  const j = await res.json();
+  if (j.ok) {
+    alert('Application submitted!');
+    navigateTo('teachers');
+  } else {
+    alert(j.error || 'Error');
+  }
+}
+
+/* ---- teacher dashboard (for logged-in teachers) ---- */
+async function renderTeacherDashboard() {
+  document.getElementById('content').innerHTML = `
+    <div class="max-w-5xl mx-auto px-4 py-8">
+      <h1 class="text-2xl font-bold mb-4">Teacher Dashboard</h1>
+      <div id="teacherBookings"></div>
+    </div>
+  `;
+  const res = await fetch('/api/teacher/bookings');
+  const j = await res.json();
+  if (j.error) {
+    document.getElementById('teacherBookings').innerHTML = '<div class="glass p-6 rounded">Please apply and login as teacher to see bookings.</div>';
+    return;
+  }
+  const container = document.getElementById('teacherBookings');
+  container.innerHTML = '';
+  j.forEach(b => {
+    container.insertAdjacentHTML('beforeend', `
+      <div class="glass p-4 rounded mb-3 flex items-center justify-between">
+        <div>
+          <div class="font-bold">${b.student_name}</div>
+          <div class="text-sm text-gray-600">${b.subject} • ${b.requested_time || 'Anytime'}</div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="teacherAction(${b.id}, 'accept')" class="px-3 py-2 bg-green-500 text-white rounded">Accept</button>
+          <button onclick="teacherAction(${b.id}, 'reject')" class="px-3 py-2 bg-red-500 text-white rounded">Reject</button>
+        </div>
+      </div>
+    `);
+  });
+}
+
+async function teacherAction(id, action) {
+  const res = await fetch('/api/teacher/booking/' + id + '/action', {
+    method:'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({action})
+  });
+  const j = await res.json();
+  if (j.ok) {
+    alert('Updated: ' + j.status);
+    renderTeacherDashboard();
+  } else {
+    alert(j.error || 'Error');
+  }
+}
+
+/* ---- add navigation mapping for SPA ---- */
+const originalNavigateTo = window.navigateTo || function(p){ console.log('no navigateTo'); };
+window.navigateTo = function(page, id){
+  if(page === 'teachers') return renderTeachers();
+  if(page === 'teacher-profile') return viewTeacher(id);
+  if(page === 'become-teacher') return renderBecomeTeacher();
+  if(page === 'teacher-dashboard') return renderTeacherDashboard();
+  return originalNavigateTo(page);
+}
+
+/* optional: auto-link buttons (call navigateTo('teachers') where you want) */
+</script>
+
+
+
+<script>
+async function renderTeacherDashboard() {
+
+  document.getElementById('content').innerHTML = `
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold mb-6">👨‍🏫 Teacher Dashboard</h1>
+
+      <div id="teacherProfileBox" class="mb-8 p-4 bg-white shadow rounded-lg">
+        Loading your teacher profile...
+      </div>
+
+      <div id="teacherBookingsBox" class="p-4 bg-white shadow rounded-lg">
+        Loading your bookings...
+      </div>
+    </div>
+  `;
+
+  loadTeacherProfile();
+  loadTeacherBookings();
+}
+
+async function loadTeacherProfile() {
+  try {
+    const res = await fetch("/api/teacher/me");
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById("teacherProfileBox").innerHTML =
+        "<p style='color:red;'>You are not a teacher yet.</p>";
+      return;
+    }
+
+    document.getElementById("teacherProfileBox").innerHTML = `
+      <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
+      <p><b>Name:</b> ${data.name}</p>
+      <p><b>Bio:</b> ${data.bio || "Not added"}</p>
+      <p><b>Subjects:</b> ${data.subjects || "Not added"}</p>
+      <p><b>Experience:</b> ${data.experience_years} years</p>
+      <p><b>Availability:</b> ${data.availability}</p>
+    `;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function loadTeacherBookings() {
+  try {
+    const res = await fetch("/api/teacher/bookings");
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById("teacherBookingsBox").innerHTML =
+        "<p style='color:red;'>No bookings found.</p>";
+      return;
+    }
+
+    let html = "<h2 class='text-xl font-semibold mb-2'>Student Bookings</h2>";
+
+    if (data.length === 0) {
+      html += "<p>No bookings yet.</p>";
+    } else {
+      data.forEach(b => {
+        html += `
+          <div class="border p-3 rounded-lg mb-2">
+            <p><b>Student:</b> ${b.student_name}</p>
+            <p><b>Subject:</b> ${b.subject}</p>
+            <p><b>Status:</b> ${b.status}</p>
+            <p><b>Time:</b> ${b.requested_time || "Not set"}</p>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("teacherBookingsBox").innerHTML = html;
+
+  } catch (err) {
+    console.error(err);
+  }
 }
 </script>
 
@@ -1974,50 +2279,14 @@ function showLiveNotification(data) {
 // 🔁 Check every 10 seconds
 setInterval(checkLiveClass, 10000);
 checkLiveClass();
+
+
+
 </script>
 
 
 
-<!-- 🔔 Realtime Live Class Listener -->
-<script>
-  // Firebase v8 Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyClC9mvybO2oA_4UWlfeVZxsjrO4VOi7mM",
-    authDomain: "vyatihar-live.firebaseapp.com",
-    databaseURL: "https://vyatihar-live-default-rtdb.firebaseio.com",
-    projectId: "vyatihar-live",
-    storageBucket: "vyatihar-live.firebasestorage.app",
-    messagingSenderId: "447656980301",
-    appId: "1:447656980301:web:bc01def31d48fb63ab5104"
-  };
 
-  // Initialize Firebase v8
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  // 🔊 Sound allowed flag
-  let soundEnabled = false;
-  document.addEventListener("click", () => {
-    soundEnabled = true;
-  });
-
-  // 🔁 Realtime Firebase listener (v8)
-  const liveRef = db.ref("live_class");
-
-  liveRef.on("value", snapshot => {
-    const data = snapshot.val();
-    console.log("🎥 Realtime Update:", data);
-
-    if (data && data.status === "LIVE") {
-      showLiveNotification(data);
-
-      if (soundEnabled) {
-        const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-        beep.play().catch(e => console.warn("Sound blocked:", e));
-      }
-    }
-  });
-</script>
 
 
 <!-- 🔹 AI Assistant JS -->
@@ -2047,14 +2316,8 @@ async function askAI() {
 }
 </script>
 
-<script>
-  // 🏠 Auto-load Home section when site first opens
-  document.addEventListener("DOMContentLoaded", () => {
-    if (typeof navigateTo === "function") {
-      navigateTo('home');
-    }
-  });
-</script>
+
+
 
 <script>
   window.addEventListener("scroll", () => {
@@ -2077,27 +2340,102 @@ async function askAI() {
   });
 
 
-// ⭐ Detect direct URL routes (subjects, ai-match, rewards)
-function handleDirectURL() {
-    const path = window.location.pathname;
+async function submitBecomeTeacher(event) {
+    event.preventDefault();
 
-    if (path === "/subjects") {
-        navigateTo("subjects");
-    } 
-    else if (path === "/rewards") {
-        navigateTo("rewards");
-    }
-    else if (path === "/projects") {
-        navigateTo("projects");
-    }
-   else if (path === "/match" || path === "/ai-match" || path === "/ai") navigateTo("match");
+    const payload = {
+        bio: document.getElementById('bt-bio').value,
+        qualifications: document.getElementById('bt-qual').value,
+        subjects: document.getElementById('bt-sub').value,
+        experience_years: document.getElementById('bt-exp').value
+    };
 
-    else {
-        navigateTo("home");
+    console.log("📤 Sending Teacher Data:", payload);
+
+    const res = await fetch("/api/teacher/become", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    console.log("📥 Teacher Apply Response:", data);
+
+    if (data.ok) {
+        alert("🎉 You have successfully applied as a teacher!");
+        navigateTo("dashboard");
+    } else {
+        alert("❌ Error: " + (data.error || "Unknown error"));
     }
 }
 
+async function checkTeacherStatus() {
+  const res = await fetch("/api/teacher/me");
+  const data = await res.json();
 
+  if (!data.error) {
+    document.getElementById("teacherDashboardBtn").classList.remove("hidden");
+  }
+}
+checkTeacherStatus();
+
+
+
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  console.log("🌍 Path detected:", window.location.pathname);
+
+  const path = window.location.pathname;
+
+  // 🧠 Direct Flask-rendered pages (optional future use)
+  if (window.pageFromServer && window.pageFromServer !== "") {
+    navigateTo(window.pageFromServer);
+    return;
+  }
+
+  // 1️⃣ Handle SPA pages opened directly in new tab
+ 
+
+  if (path === "/teachers") {
+    navigateTo("teachers");
+    return;
+  }
+
+  if (path === "/login") {
+    navigateTo("login");
+    return;
+  }
+
+  if (path === "/signup") {
+    navigateTo("signup");
+    return;
+  }
+
+  if (path === "/teacher-dashboard") {
+    navigateTo("teacher-dashboard");
+    return;
+  }
+
+  // 2️⃣ Default fallback → HOME
+  navigateTo("home");
+});
+</script>
+
+
+<script>
+  // This checks server session using an API endpoint
+  fetch("/api/check-session")
+    .then(res => res.json())
+    .then(data => {
+      if (data.logged_in === true) {
+        state.isAuthenticated = true;
+      }
+    });
 </script>
 
 </body>

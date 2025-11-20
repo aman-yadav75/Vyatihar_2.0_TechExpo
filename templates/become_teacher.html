@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Become a Teacher - Vyatihar</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body{
+      background:#f3f4f6;
+      font-family: 'Inter', sans-serif;
+    }
+    .container{
+      max-width:650px;
+      margin:40px auto;
+      background:white;
+      padding:30px;
+      border-radius:16px;
+      box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    }
+    input, textarea {
+      width:100%;
+      margin-top:8px;
+      padding:12px;
+      border:1px solid #ddd;
+      border-radius:10px;
+    }
+    button{
+      background:linear-gradient(90deg,#7b2ff7,#f107a3);
+      border:none;
+      padding:14px;
+      width:100%;
+      color:white;
+      font-size:16px;
+      border-radius:12px;
+      cursor:pointer;
+      margin-top:14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>📘 Apply to Become a Teacher</h2>
+  <p>Please fill your details to create your teacher profile.</p>
+
+  <form action="/api/teacher/become" method="POST" enctype="multipart/form-data">
+
+    <label>Bio</label>
+    <textarea name="bio" required></textarea>
+
+    <label>Qualifications</label>
+    <input type="text" name="qualifications" required>
+
+    <label>Subjects You Teach (comma separated)</label>
+    <input type="text" name="subjects" placeholder="Math, Physics, AI">
+
+    <label>Experience (years)</label>
+    <input type="number" name="experience_years">
+
+    <label>Availability</label>
+    <input type="text" name="availability" placeholder="Weekends, Evenings">
+
+    <label>Upload Resume</label>
+    <input type="file" name="resume">
+
+    <button type="submit">Submit Application</button>
+  </form>
+</div>
+
+</body>
+</html>
