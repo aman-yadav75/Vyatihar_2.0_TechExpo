@@ -174,34 +174,30 @@ async function takeAction(id, action, meet_link = "") {
   loadBookings();
 }
 
-
 async function startLiveClass() {
-    const subject = document.getElementById("liveSubject").value;
-    const meet = document.getElementById("meetLink").value;
+  const subject = document.getElementById("liveSubject").value;
+  const meet = document.getElementById("meetLink").value;
 
-    if (!subject || !meet) {
-        alert("Please enter subject and paste meet link.");
-        return;
-    }
+  if (!subject || !meet) {
+    alert("Please enter subject and meet link");
+    return;
+  }
 
-    const form = new FormData();
-    form.append("subject", subject);
-    form.append("meet_link", meet);
+  const form = new FormData();
+  form.append("subject", subject);
+  form.append("meet_link", meet);
 
-    const res = await fetch("/api/live/set", {
-        method: "POST",
-        body: form
-    });
+  const res = await fetch("/api/live/set", {
+    method: "POST",
+    body: form
+  });
 
-    const data = await res.json();
-
-    if (data.ok) {
-        alert("Live class started!");
-        checkLiveClass();
-    } else {
-        alert("Error starting live class");
-    }
+  const data = await res.json();
+  if (data.ok) {
+    checkLiveClass();
+  }
 }
+
 
 
 

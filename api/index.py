@@ -988,12 +988,13 @@ def reset_password():
 @app.route("/api/live/set", methods=["POST"])
 @login_required
 def set_live_link():
+    profile = TeacherProfile.query.filter_by(user_id=session["user_id"]).first()
+
     subject = request.form.get("subject")
     meet_link = request.form.get("meet_link")
 
-    # Save latest live class data globally in DB
     live = LiveClass(
-        teacher_id=session["user_id"],
+        teacher_id=profile.id,
         subject=subject,
         meet_link=meet_link,
         is_live=True
