@@ -104,8 +104,40 @@ async function checkStudentLive() {
   `;
 }
 
-setInterval(checkStudentLive, 5000);
 checkStudentLive();
+setInterval(checkStudentLive, 5000);
+
+
+let liveMeetLink = null;
+
+async function checkLiveStatus() {
+  const res = await fetch("/api/live/current");
+  const data = await res.json();
+
+  if (data.live) {
+    liveMeetLink = data.meet_link;
+
+    const badge = document.getElementById(`live-${data.subject}`);
+    if (badge) badge.classList.remove("hidden");
+  }
+}
+
+</script>
+
+<script>
+
+async function joinLiveClass() {
+  const res = await fetch("/api/live/current");
+  const data = await res.json();
+
+  if (!data.live) {
+    alert("No live class right now.");
+    return;
+  }
+
+  window.open(data.meet_link, "_blank");
+}
+
 </script>
 
 </body>

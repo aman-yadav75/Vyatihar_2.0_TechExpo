@@ -15,13 +15,9 @@ from flask_bcrypt import Bcrypt
 import random
 import string
 
-def generate_meet_link():
-    """Generate a Google Meet style link automatically."""
-    def part():
-        return ''.join(random.choice(string.ascii_lowercase) for _ in range(3))
 
-    code = f"{part()}-{part()}{part()}-{part()}"
-    return f"https://meet.google.com/{code}"
+
+
 
 
 # ==================================
@@ -567,19 +563,8 @@ def ask_ai():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ==================================
-# 🎥 LIVE CLASS ENDPOINT
-# ==================================
-@app.route("/live_class", methods=["GET"])
-@login_required
-def get_live_class():
-    data = {
-        "subject": "AI & ML",
-        "status": "LIVE",
-        "meetLink": "https://meet.google.com/xyz",
-        "timestamp": "2025-11-11T14:30:00"
-    }
-    return jsonify(data)
+
+
 
 # ==================================
 # 📄 NOTES UPLOAD
@@ -1000,32 +985,23 @@ def reset_password():
 
     return {"ok": True, "message": "Password reset successful"}
 
-@app.route("/api/live/start", methods=["POST"])
+@app.route("/api/live/set", methods=["POST"])
 @login_required
-def start_live():
-    profile = TeacherProfile.query.filter_by(user_id=session["user_id"]).first()
-    if not profile:
-        return jsonify({"error": "not_a_teacher"}), 403
+def set_live_link():
+    subject = request.form.get("subject")
+    meet_link = request.form.get("meet_link")
 
-    subject = request.form.get("subject", "Live Class")
-    meet_link = generate_meet_link()
-
+    # Save latest live class data globally in DB
     live = LiveClass(
-        teacher_id=profile.id,
+        teacher_id=session["user_id"],
         subject=subject,
         meet_link=meet_link,
         is_live=True
     )
-
     db.session.add(live)
     db.session.commit()
 
-    return jsonify({
-        "ok": True,
-        "subject": subject,
-        "meet_link": meet_link,
-        "live_id": live.id
-    })
+    return jsonify({"ok": True})
 
 
 @app.route("/api/live/end", methods=["POST"])
@@ -1044,19 +1020,16 @@ def end_live():
 
 
 @app.route("/api/live/current")
-def get_current_live():
+def get_live():
     live = LiveClass.query.filter_by(is_live=True).order_by(LiveClass.started_at.desc()).first()
-    
+
     if not live:
         return jsonify({"live": False})
-
-    teacher = TeacherProfile.query.get(live.teacher_id)
 
     return jsonify({
         "live": True,
         "subject": live.subject,
-        "meet_link": live.meet_link,
-        "teacher_name": teacher.user.username
+        "meet_link": live.meet_link
     })
 
 

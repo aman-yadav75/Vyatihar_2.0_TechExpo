@@ -707,14 +707,343 @@ liveRef.on("value", snapshot => {
       isAuthenticated: false,
       user: null,
       coins: 0,
-     subjects: [
-  { id: 1, name: 'Finance', icon: '💰', progress: 45, students: 1234, description: 'Master financial concepts...', meetLink: 'https://meet.google.com/finance-live' },
-  { id: 2, name: 'Marketing', icon: '📊', progress: 60, students: 987, description: 'Learn digital marketing...', meetLink: 'https://meet.google.com/marketing-live' },
-  { id: 3, name: 'AI & ML', icon: '🤖', progress: 30, students: 2456, description: 'Dive into artificial intelligence...', meetLink: 'https://meet.google.com/aiml-live' },
-  { id: 4, name: 'Web Development', icon: '💻', progress: 75, students: 3421, description: 'Build modern apps...', meetLink: 'https://meet.google.com/webdev-live' },
-  { id: 5, name: 'Data Science', icon: '📈', progress: 20, students: 1876, description: 'Analyze data...', meetLink: 'https://meet.google.com/datasci-live' },
-  { id: 6, name: 'Design', icon: '🎨', progress: 55, students: 1543, description: 'Create UI/UX designs...', meetLink: 'https://meet.google.com/design-live' }
+subjects: [
+
+  // ============================
+  // 1️⃣ OLD BASIC SUBJECTS
+  // ============================
+
+  { id: 1, name: 'Finance', icon: '💰', progress: 45, students: 1234,
+    description: 'Master financial concepts...',
+  },
+
+  { id: 2, name: 'Marketing', icon: '📊', progress: 60, students: 987,
+    description: 'Learn digital marketing...',
+   
+  },
+
+  { id: 3, name: 'AI & ML', icon: '🤖', progress: 30, students: 2456,
+    description: 'Dive into artificial intelligence...',
+   
+  },
+
+  { id: 4, name: 'Web Development', icon: '💻', progress: 75, students: 3421,
+    description: 'Build modern apps...',
+   
+  },
+
+  { id: 5, name: 'Data Science', icon: '📈', progress: 20, students: 1876,
+    description: 'Analyze data...',
+   
+  },
+
+  { id: 6, name: 'Design', icon: '🎨', progress: 55, students: 1543,
+    description: 'Create UI/UX designs...',
+   
+  },
+
+
+  // ============================
+  // 2️⃣ NEW ADVANCED TECH SUBJECTS
+  // ============================
+
+  { id: 7, name: "Full Stack Development", icon: "🧩", progress: 90, students: 3200,
+    description: "Master frontend + backend development...",
+    
+  },
+
+  { id: 8, name: "Mobile App Dev (Flutter)", icon: "📱", progress: 30, students: 2950,
+    description: "Build iOS & Android apps using Flutter...",
+   
+  },
+
+  { id: 9, name: "Cybersecurity", icon: "🛡️", progress: 40, students: 4100,
+    description: "Defend systems & networks from cyber attacks...",
+   
+  },
+
+  { id: 10, name: "Ethical Hacking", icon: "🕵️‍♂️", progress: 30, students: 3800,
+    description: "Learn penetration testing & security auditing...",
+   
+  },
+
+  { id: 11, name: "Cloud Computing (AWS)", icon: "☁️", progress: 40, students: 3600,
+    description: "Learn cloud services, hosting & architecture...",
+   
+  },
+
+  { id: 12, name: "Blockchain & Web3", icon: "⛓️", progress: 70, students: 2500,
+    description: "Understand blockchain, crypto & Web3 apps...",
+   
+  },
+
+  { id: 13, name: "Game Development (Unity)", icon: "🎮", progress: 70, students: 2100,
+    description: "Create 2D & 3D games in Unity...",
+   
+  },
+
+  { id: 14, name: "AR / VR Development", icon: "🕶️", progress: 90, students: 1600,
+    description: "Build immersive augmented & virtual reality apps...",
+    
+  },
+
+  { id: 15, name: "Robotics", icon: "🤖", progress: 0, students: 2300,
+    description: "Learn robot mechanics, sensors & automation...",
+    
+  },
+
+  { id: 16, name: "Internet of Things (IoT)", icon: "📡", progress: 0, students: 2450,
+    description: "Build smart devices & IoT systems...",
+    
+  },
+
+  { id: 17, name: "DevOps", icon: "⚙️", progress: 0, students: 1850,
+    description: "CI/CD pipelines, Docker, Kubernetes...",
+   
+  },
+
+  { id: 18, name: "Java Programming", icon: "☕", progress: 0, students: 3000,
+    description: "Core Java + OOP + DSA...",
+   
+  },
+
+  { id: 19, name: "Python Programming", icon: "🐍", progress: 0, students: 4200,
+    description: "Learn Python from basics to advanced...",
+   
+  },
+
+  { id: 20, name: "C++ DSA", icon: "📘", progress: 0, students: 3900,
+    description: "Complete Data Structures & Algorithms...",
+    
+  },
+
+
+  // ============================
+  // 3️⃣ BA SUBJECTS (21–40)
+  // ============================
+
+  { id: 21, name: "BA English - Poetry", icon: "📘", progress: 0, students: 320,
+    description: "Introduction to poetry & literature...",
+   
+  },
+
+  { id: 22, name: "BA English - Drama", icon: "🎭", progress: 0, students: 280,
+    description: "Study of stage plays & drama writing...",
+   
+  },
+
+  { id: 23, name: "BA English - Novels", icon: "📖", progress: 0, students: 350,
+    description: "Deep dive into novels...",
+   
+  },
+
+  { id: 24, name: "Communication Skills", icon: "🗣️", progress: 20, students: 540,
+    description: "Improve English speaking & communication...",
+    
+  },
+
+  { id: 25, name: "Indian Constitution", icon: "📜", progress: 60, students: 410,
+    description: "Study of Indian constitutional law...",
+    
+  },
+
+  { id: 26, name: "Political Theory", icon: "🏛️", progress: 30, students: 390,
+    description: "Fundamentals of political science...",
+   
+  },
+
+  { id: 27, name: "International Relations", icon: "🌍", progress: 20, students: 450,
+    description: "Study global political relations...",
+    meetLink: "https://meet.google.com/international-relations"
+  },
+
+  { id: 28, name: "Comparative Politics", icon: "⚖️", progress: 70, students: 300,
+    description: "Compare political systems across nations...",
+    meetLink: "https://meet.google.com/comparative-politics"
+  },
+
+  { id: 29, name: "Human Behaviour", icon: "🧍", progress: 50, students: 500,
+    description: "Basics of human behaviour...",
+    meetLink: "https://meet.google.com/human-behaviour"
+  },
+
+  { id: 30, name: "Personality", icon: "🙂", progress: 40, students: 520,
+    description: "Different personality theories...",
+    meetLink: "https://meet.google.com/personality"
+  },
+
+  { id: 31, name: "Abnormal Psychology", icon: "⚠️", progress: 20, students: 480,
+    description: "Mental disorders & treatments...",
+    meetLink: "https://meet.google.com/abnormal-psychology"
+  },
+
+  { id: 32, name: "Counselling", icon: "💬", progress: 10, students: 450,
+    description: "Fundamentals of counselling methods...",
+    meetLink: "https://meet.google.com/counselling"
+  },
+
+
+  // ============================
+  // 4️⃣ BCOM SUBJECTS (41–55)
+  // ============================
+
+  { id: 41, name: "Financial Accounting", icon: "📚", progress: 40, students: 700,
+    description: "Accounting & journal entries...",
+    meetLink: "https://meet.google.com/financial-accounting"
+  },
+
+  { id: 42, name: "Business Law", icon: "⚖️", progress: 70, students: 650,
+    description: "Company law & contracts...",
+    meetLink: "https://meet.google.com/business-law"
+  },
+
+  { id: 43, name: "Economics (BCom)", icon: "💼", progress: 20, students: 620,
+    description: "Commerce-related economics topics...",
+    meetLink: "https://meet.google.com/bcom-economics"
+  },
+
+  { id: 44, name: "Taxation", icon: "🧾", progress: 10, students: 590,
+    description: "Income tax, GST, salary computation...",
+    meetLink: "https://meet.google.com/taxation"
+  },
+
+  { id: 45, name: "Corporate Accounting", icon: "🏢", progress: 70, students: 560,
+    description: "Corporate financial statements...",
+    meetLink: "https://meet.google.com/corporate-accounting"
+  },
+
+  { id: 46, name: "Cost Accounting", icon: "📊", progress: 60, students: 590,
+    description: "Cost control, budgeting, cost sheets...",
+    meetLink: "https://meet.google.com/cost-accounting"
+  },
+
+  { id: 47, name: "Business Statistics", icon: "📈", progress: 10, students: 480,
+    description: "Probability, correlation, analysis...",
+    meetLink: "https://meet.google.com/business-statistics"
+  },
+
+  { id: 48, name: "Auditing", icon: "📝", progress: 0, students: 530,
+    description: "Principles of auditing...",
+    meetLink: "https://meet.google.com/auditing"
+  },
+
+  { id: 49, name: "Management Accounting", icon: "📘", progress: 80, students: 620,
+    description: "Budgeting, ratio analysis...",
+    meetLink: "https://meet.google.com/management-accounting"
+  },
+
+  { id: 50, name: "Banking & Insurance", icon: "🏦", progress: 90, students: 580,
+    description: "RBI functions, banking laws...",
+    meetLink: "https://meet.google.com/banking-insurance"
+  },
+
+  { id: 51, name: "Financial Management", icon: "💼", progress: 10, students: 640,
+    description: "Capital budgeting, risk analysis...",
+    meetLink: "https://meet.google.com/financial-management"
+  },
+
+  { id: 52, name: "Human Resource Management", icon: "🧑‍🤝‍🧑", progress: 10, students: 520,
+    description: "Recruitment, staffing...",
+    meetLink: "https://meet.google.com/hrm"
+  },
+
+  { id: 53, name: "Marketing Management", icon: "📣", progress: 30, students: 540,
+    description: "4Ps, market planning...",
+    meetLink: "https://meet.google.com/marketing-management"
+  },
+
+  { id: 54, name: "Business Environment", icon: "🌐", progress: 20, students: 500,
+    description: "Economic & social factors...",
+    meetLink: "https://meet.google.com/business-environment"
+  },
+
+  { id: 55, name: "Entrepreneurship", icon: "🚀", progress: 70, students: 610,
+    description: "Startup growth strategies...",
+    meetLink: "https://meet.google.com/entrepreneurship"
+  },
+
+
+  // ============================
+  // 5️⃣ MORE ADVANCED TECH SUBJECTS (56–70)
+  // ============================
+
+  { id: 56, name: "React.js Frontend Development", icon: "⚛️", progress: 8, students: 3200,
+    description: "Modern frontend UI development...",
+    meetLink: "https://meet.google.com/react"
+  },
+
+  { id: 57, name: "Node.js Backend Development", icon: "🟢", progress: 12, students: 3100,
+    description: "APIs, auth, backend logic...",
+    meetLink: "https://meet.google.com/node"
+  },
+
+  { id: 58, name: "MongoDB Database", icon: "🍃", progress: 49, students: 2800,
+    description: "NoSQL database concepts...",
+    meetLink: "https://meet.google.com/mongodb"
+  },
+
+  { id: 59, name: "SQL + PostgreSQL", icon: "🗄️", progress: 30, students: 3500,
+    description: "Joins, triggers, indexing...",
+    meetLink: "https://meet.google.com/sql"
+  },
+
+  { id: 60, name: "Big Data & Hadoop", icon: "🐘", progress: 10, students: 2100,
+    description: "Distributed data processing...",
+    meetLink: "https://meet.google.com/hadoop"
+  },
+
+  { id: 61, name: "Machine Learning (Advanced)", icon: "🧠", progress: 82, students: 4200,
+    description: "Deep dive ML concepts...",
+    meetLink: "https://meet.google.com/ml-advanced"
+  },
+
+  { id: 62, name: "Deep Learning with TensorFlow", icon: "🧬", progress: 69, students: 3900,
+    description: "Neural networks, CNNs...",
+    meetLink: "https://meet.google.com/deep-learning"
+  },
+
+  { id: 63, name: "Artificial Intelligence (Advanced)", icon: "🌐", progress: 17, students: 3600,
+    description: "Generative AI, NLP...",
+    meetLink: "https://meet.google.com/ai-advanced"
+  },
+
+  { id: 64, name: "Data Analytics (Power BI)", icon: "📊", progress: 47, students: 3000,
+    description: "Interactive dashboards & insights...",
+    meetLink: "https://meet.google.com/power-bi"
+  },
+
+  { id: 65, name: "Data Engineering", icon: "🛠️", progress: 19, students: 2700,
+    description: "Data pipelines, ETL...",
+    meetLink: "https://meet.google.com/data-engineering"
+  },
+
+  { id: 66, name: "UI/UX Professional Design", icon: "🎨", progress: 20, students: 2900,
+    description: "Figma, prototyping...",
+    meetLink: "https://meet.google.com/uiux-pro"
+  },
+
+  { id: 67, name: "Software Testing & QA", icon: "🧪", progress: 40, students: 2600,
+    description: "Manual + automation testing...",
+    meetLink: "https://meet.google.com/testing"
+  },
+
+  { id: 68, name: "DSA in Java", icon: "📙", progress: 50, students: 3100,
+    description: "Algorithms, competitive coding...",
+    meetLink: "https://meet.google.com/dsa-java"
+  },
+
+  { id: 69, name: "AI Prompt Engineering", icon: "✨", progress: 10, students: 3300,
+    description: "Build better prompts...",
+    meetLink: "https://meet.google.com/prompt-engineering"
+  },
+
+  { id: 70, name: "ChatGPT App Development", icon: "🤖", progress: 12, students: 3400,
+    description: "Build AI apps using ChatGPT API...",
+    meetLink: "https://meet.google.com/chatgpt-dev"
+  },
+
 ],
+
 
       projects: [],
       matches: [
@@ -1205,10 +1534,15 @@ function navigateTo(page) {
   <button id="continueLearningBtn" class="w-full py-3 gradient-bg text-white rounded-lg font-semibold hover:shadow-lg transition">
     Continue Learning
   </button>
- <button onclick="openLiveClass('${subject.meetLink}')"
-    class="w-full py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
-    🔴 Start Live Class
-  </button>
+<button onclick="joinLiveClass()" 
+  class="w-full py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition">
+  🔴 Join Live Class
+</button>
+
+
+
+
+
     <button onclick="uploadRecording('${subject.name}')"
     class="w-full py-2 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition">
     📤 Upload Recording To Drive
@@ -1219,19 +1553,152 @@ function navigateTo(page) {
           </div>
         `;
       }
-
-      document.getElementById('content').innerHTML = `
+//
+document.getElementById('content').innerHTML = `
         <div class="max-w-7xl mx-auto px-4 py-8">
-          <div class="mb-8">
-            <h1 id="subjectsTitle" class="text-4xl font-bold">Explore Subjects</h1>
-            <p class="text-gray-600 mt-2">Choose a subject to start your learning journey</p>
-          </div>
+          <div class="mb-8 flex flex-col md:flex-row justify-between items-center">
+
+  <!-- LEFT SIDE heading -->
+  <div>
+    <h1 id="subjectsTitle" class="text-4xl font-bold">Explore Subjects</h1>
+    <p class="text-gray-600 mt-2">Choose a subject to start your learning journey</p>
+  </div>
+
+<!-- RIGHT SIDE search bar -->
+<div class="mt-4 md:mt-0 relative">
+
+  <!-- Search Icon (Right Side, Transparent Black) -->
+  <span class="absolute right-4 top-1/2 transform -translate-y-1/2">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="2" 
+       stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11" cy="11" r="7"></circle>
+    <line x1="16.65" y1="16.65" x2="22" y2="22"></line>
+  </svg>
+</span>
+
+
+  <input 
+    id="subjectSearch"
+    type="text"
+    placeholder="Search Any Subject..."
+    oninput="filterSubjects()"
+    class="w-96 pr-12 pl-5 py-3 rounded-2xl shadow-lg border border-gray-300 bg-white
+           focus:ring-2 focus:ring-purple-400 focus:outline-none text-gray-800"
+  >
+</div>
+
+
+
+
+</div>
+
           <div class="grid md:grid-cols-3 gap-6">
             ${subjectsHTML}
           </div>
         </div>
       `;
+       checkLiveStatus();
     }
+
+// fliter
+function filterSubjects() {
+  const search = document.getElementById("subjectSearch").value.toLowerCase();
+
+  const filtered = state.subjects.filter(sub =>
+    sub.name.toLowerCase().includes(search) ||
+    sub.description.toLowerCase().includes(search)
+  );
+
+  if (filtered.length === 0) {
+    document.querySelector(".grid").innerHTML = `
+      <div class="col-span-3 text-center py-10">
+        <p class="text-2xl font-semibold text-gray-600">
+          ❌ No Such Subject Exist Till Now In Our Website
+        </p>
+      </div>
+    `;
+    return;
+}
+
+
+  let html = '';
+  for (let subject of filtered) {
+
+    html += `
+      <div class="glass rounded-2xl p-6 hover:shadow-2xl transition transform hover:scale-105 relative">
+
+        <div class="text-5xl mb-4">${subject.icon}</div>
+        <h3 class="text-2xl font-bold mb-2">${subject.name}</h3>
+        <p class="text-gray-600 text-sm mb-4">${subject.description}</p>
+
+        <div class="mb-4">
+          <div class="flex justify-between text-sm mb-1">
+            <span class="text-gray-600">Progress</span>
+            <span class="font-semibold">${subject.progress}%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="gradient-bg h-2 rounded-full transition-all"
+                 style="width:${subject.progress}%"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm text-gray-600">${subject.students} students</span>
+          <span class="text-sm font-semibold text-purple-600">View Course</span>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <button class="w-full py-3 gradient-bg text-white rounded-lg font-semibold">Continue Learning</button>
+
+          <button onclick="joinLiveClass()"
+            class="w-full py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
+            🔴 Join Live Class
+          </button>
+
+          <button onclick="uploadRecording('${subject.name}')"
+            class="w-full py-2 bg-gray-700 text-white rounded-lg font-semibold">
+            📤 Upload Recording To Drive
+          </button>
+        </div>
+
+      </div>
+    `;
+  }
+
+  document.querySelector(".grid").innerHTML = html;
+}
+
+// ===== LIVE CLASS CHECK (STUDENT SIDE) =====
+let liveMeetLink = null;
+
+// check live class every 3 sec
+setInterval(checkLiveStatus, 3000);
+
+async function checkLiveStatus() {
+  const res = await fetch("/api/live/current");
+  const data = await res.json();
+
+  if (data.live) {
+    liveMeetLink = data.meet_link;
+
+    // show LIVE badge on subject card
+    const tag = document.getElementById(`live-${data.subject}`);
+    if (tag) tag.classList.remove("hidden");
+  }
+}
+
+function joinLiveClass() {
+  if (!liveMeetLink) {
+    alert("No live class right now!");
+    return;
+  }
+  window.open(liveMeetLink, "_blank");
+}
+
+
+
+// Run every 4 seconds
+setInterval(checkLiveStatus, 4000);
 
     function renderRewards() {
 
@@ -1554,7 +2021,8 @@ function handleGoogleLogin(response) {
 }
 
 
-// Generate Google Meet Link Using Calendar API
+
+
 
 async function startLiveClass(subjectName) {
   const token = localStorage.getItem("google_access_token");
@@ -1584,6 +2052,7 @@ async function startLiveClass(subjectName) {
   );
 
   const data = await response.json();
+  
   if (data.hangoutLink) {
     alert(`Class Created! Join here:\n${data.hangoutLink}`);
     saveClassToDrive(subjectName, data.hangoutLink);
@@ -1593,6 +2062,8 @@ async function startLiveClass(subjectName) {
     alert("Error creating class. Try again.");
   }
 }
+
+
 
 // Save Class Info to Google Drive
 

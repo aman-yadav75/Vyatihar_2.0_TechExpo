@@ -38,10 +38,22 @@
 <div class="bg-white p-6 rounded-xl shadow mb-6">
   <h2 class="text-xl font-semibold mb-3">🎥 Live Class</h2>
 
-  <div id="liveBox">
-    <p class="text-gray-600">Checking live status...</p>
-  </div>
+ <div id="liveBox">
+  
+  <input id="liveSubject" class="p-2 border rounded w-full mb-2"
+         placeholder="Enter Subject (e.g., Finance)">
+  
+  <input id="liveLink" class="p-2 border rounded w-full mb-2"
+         placeholder="Paste Google Meet link">
+
+  <button onclick="startLiveClass()"
+        class="px-4 py-2 bg-green-600 text-white rounded">
+    Start Live Class
+</button>
+
+
 </div>
+
 
     <!-- BOOKINGS LIST -->
     <div class="bg-white p-6 rounded-xl shadow">
@@ -162,48 +174,76 @@ async function takeAction(id, action, meet_link = "") {
   loadBookings();
 }
 
+
+async function startLiveClass() {
+    const subject = document.getElementById("liveSubject").value;
+    const meet = document.getElementById("meetLink").value;
+
+    if (!subject || !meet) {
+        alert("Please enter subject and paste meet link.");
+        return;
+    }
+
+    const form = new FormData();
+    form.append("subject", subject);
+    form.append("meet_link", meet);
+
+    const res = await fetch("/api/live/set", {
+        method: "POST",
+        body: form
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+        alert("Live class started!");
+        checkLiveClass();
+    } else {
+        alert("Error starting live class");
+    }
+}
+
+
+
+
 async function checkLiveClass() {
-  const res = await fetch("/api/live/current");
-  const data = await res.json();
-  const box = document.getElementById("liveBox");
+    const res = await fetch("/api/live/current");
+    const data = await res.json();
+    const box = document.getElementById("liveBox");
 
-  if (!data.live) {
+    if (!data.live) {
+        box.innerHTML = `
+          <input id="liveSubject" class="p-2 border rounded w-full" placeholder="Enter subject">
+          <input id="meetLink" class="p-2 border rounded w-full mt-2" placeholder="Paste Google Meet link">
+          <button onclick="startLiveClass()" 
+            class="px-4 py-2 bg-green-600 text-white rounded mt-2 w-full">
+            Start Live Class
+          </button>
+        `;
+        return;
+    }
+
     box.innerHTML = `
-      <input id="liveSubject" class="p-2 border rounded" placeholder="Enter subject">
-      <button onclick="startLive()" class="px-4 py-2 bg-green-600 text-white rounded mt-2">Start Live Class</button>
+        <p class="text-lg font-semibold">LIVE: ${data.subject}</p>
+        <a href="${data.meet_link}" target="_blank"
+           class="px-4 py-2 bg-indigo-600 text-white rounded mt-2 inline-block">
+           Join Meet
+        </a>
+        <button onclick="endLiveClass()" 
+          class="px-4 py-2 bg-red-600 text-white rounded mt-2">
+          End Live Class
+        </button>
     `;
-    return;
-  }
-
-  box.innerHTML = `
-    <p class="text-lg font-semibold">LIVE: ${data.subject}</p>
-    <a href="${data.meet_link}" target="_blank" class="px-4 py-2 bg-indigo-600 text-white rounded mt-2 inline-block">Join Meet</a>
-    <button onclick="endLive()" class="px-4 py-2 bg-red-600 text-white rounded mt-2">End Live Class</button>
-  `;
 }
 
-async function startLive() {
-  const subject = document.getElementById("liveSubject").value || "Live Class";
-  const form = new FormData();
-  form.append("subject", subject);
-  
-  await fetch("/api/live/start", {
-    method: "POST",
-    body: form
-  });
 
-  checkLiveClass();
+
+async function endLiveClass() {
+    await fetch("/api/live/end", { method: "POST" });
+    checkLiveClass();
 }
 
-async function endLive() {
-  await fetch("/api/live/end", { method: "POST" });
-  checkLiveClass();
-}
-
-checkLiveClass();
-
-// Load bookings
-loadBookings();
+// INITIAL LOAD
 checkLiveClass();
 
 </script>
