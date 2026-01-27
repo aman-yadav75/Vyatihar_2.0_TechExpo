@@ -10,8 +10,8 @@ def login_required(f):
     return wrapper
 import os
 from werkzeug.utils import secure_filename
-
-
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 import random
 import string
 
@@ -45,98 +45,123 @@ app.permanent_session_lifetime = timedelta(days=7)
 
 
 
-import firebase_admin
-from firebase_admin import credentials, firestore
-import os, json
+# ==================================
+# ⚙️ DATABASE SETUP (Auto-detect SQLite or PostgreSQL)
+# ==================================
 
-service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-cred = credentials.Certificate(json.loads(service_account_json))
+if DATABASE_URL:
+    print("📡 Using PostgreSQL from Render")
+    # Render gives URL starting with "postgres://"
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+else:
+    print("💾 Using local SQLite database")
+    INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
+    os.makedirs(INSTANCE_DIR, exist_ok=True)
 
-db = firestore.client()
-print("🔥 Firebase connected successfully")
+    DB_PATH = os.path.join(INSTANCE_DIR, "users.db")
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + DB_PATH
 
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
-# =====================================================
-# ✅ FIREBASE FUNCTIONS (REPLACEMENT OF SQL MODELS)
-# =====================================================
+from flask_migrate import Migrate
 
-# 👤 USERS
-def create_user(user_id, username, email, role):
-    db.collection("users").document(user_id).set({
-        "username": username,
-        "email": email,
-        "role": role,
-        "coins": 0,
-        "is_admin": False
-    })
-
-# 👨‍🏫 TEACHER PROFILE
-def create_teacher_profile(user_id, bio, qualifications, subjects, experience, availability):
-    db.collection("teachers").add({
-        "user_id": user_id,
-        "bio": bio,
-        "qualifications": qualifications,
-        "subjects": subjects,
-        "experience_years": experience,
-        "availability": availability,
-        "verified": False,
-        "created_at": firestore.SERVER_TIMESTAMP
-    })
-
-def get_teacher(teacher_id):
-    doc = db.collection("teachers").document(teacher_id).get()
-    return doc.to_dict() if doc.exists else None
-
-# 📅 BOOKINGS
-def create_booking(student_id, teacher_id, subject, requested_time):
-    db.collection("bookings").add({
-        "student_id": student_id,
-        "teacher_id": teacher_id,
-        "subject": subject,
-        "requested_time": requested_time,
-        "status": "pending",
-        "created_at": firestore.SERVER_TIMESTAMP
-    })
-
-# 🔴 LIVE CLASS
-def start_live_class(teacher_id, subject, meet_link):
-    db.collection("live_classes").add({
-        "teacher_id": teacher_id,
-        "subject": subject,
-        "meet_link": meet_link,
-        "is_live": True,
-        "started_at": firestore.SERVER_TIMESTAMP
-    })
-
-# ⭐ SAVED TEACHERS
-def save_teacher(student_id, teacher_id):
-    db.collection("saved_teachers").add({
-        "student_id": student_id,
-        "teacher_id": teacher_id,
-        "created_at": firestore.SERVER_TIMESTAMP
-    })
-
-# 📢 ANNOUNCEMENTS
-def add_announcement(message):
-    db.collection("announcements").add({
-        "message": message,
-        "created_at": firestore.SERVER_TIMESTAMP
-    })
+migrate = Migrate(app, db)
 
 
+# Teacher details separated from user
+class TeacherProfile(db.Model):
+    __tablename__ = "teacher_profiles"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True)
+    bio = db.Column(db.Text)
+    qualifications = db.Column(db.String(500))
+    subjects = db.Column(db.String(300))   # comma separated or JSON later
+    experience_years = db.Column(db.Integer, default=0)
+    availability = db.Column(db.String(200))  # e.g. "Evenings, Weekends"
+    resume_path = db.Column(db.String(500))
+    verified = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
 
-# # ==================================
-# # 🔑 OpenAI API KEY
-# # ==================================
-# from openai import OpenAI
-# import os
 
-# client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    user = db.relationship("User", backref=db.backref("teacher_profile", uselist=False))
+
+class Booking(db.Model):
+    __tablename__ = "bookings"
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher_profiles.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    subject = db.Column(db.String(200))
+    requested_time = db.Column(db.DateTime)
+    status = db.Column(db.String(20), default="pending")  # pending/accepted/rejected/completed
+    meet_link = db.Column(db.String(500))
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+    teacher = db.relationship("TeacherProfile", backref="bookings")
+    student = db.relationship("User", foreign_keys=[student_id])
+
+class LiveClass(db.Model):
+    __tablename__ = "live_classes"
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher_profiles.id"), nullable=False)
+    subject = db.Column(db.String(200))
+    meet_link = db.Column(db.String(500))
+    is_live = db.Column(db.Boolean, default=True)
+    started_at = db.Column(db.DateTime, default=db.func.now())
+
+
+class SavedTeacher(db.Model):
+    __tablename__ = "saved_teachers"
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey("teacher_profiles.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+
+# 🧑‍💻 USER MODEL
+class User(db.Model):
+    __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    coins = db.Column(db.Integer, default=0)
+    is_admin = db.Column(db.Boolean, default=False)
+    role = db.Column(db.String(20), nullable=True)
+
+
+    def __repr__(self):
+        return f"<User {self.username}>"
+
+# 📢 Announcements Table
+class Announcement(db.Model):
+    __tablename__ = 'announcements'
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+    def __repr__(self):
+        return f"<Announcement {self.id}>"
+
+
+
+
+# ==================================
+# 🔑 OpenAI API KEY
+# ==================================
+from openai import OpenAI
+import os
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 # ==================================
