@@ -10,8 +10,8 @@ def login_required(f):
     return wrapper
 import os
 from werkzeug.utils import secure_filename
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
+
+
 import random
 import string
 
@@ -45,35 +45,23 @@ app.permanent_session_lifetime = timedelta(days=7)
 
 
 
-# ==================================
-# ⚙️ DATABASE SETUP (Auto-detect SQLite or PostgreSQL)
-# ==================================
+import firebase_admin
+from firebase_admin import credentials, firestore
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+firebase_config = {
+    "type": "service_account",
+    "project_id": os.getenv("FIREBASE_PROJECT_ID"),
+    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+}
 
-if DATABASE_URL:
-    print("📡 Using PostgreSQL from Render")
-    # Render gives URL starting with "postgres://"
-    if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+cred = credentials.Certificate(firebase_config)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
-else:
-    print("💾 Using local SQLite database")
-    INSTANCE_DIR = os.path.join(BASE_DIR, "instance")
-    os.makedirs(INSTANCE_DIR, exist_ok=True)
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)
 
-    DB_PATH = os.path.join(INSTANCE_DIR, "users.db")
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + DB_PATH
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-
-from flask_migrate import Migrate
-
-migrate = Migrate(app, db)
+db = firestore.client()
+print("🔥 Firebase connected successfully")
 
 
 # Teacher details separated from user
