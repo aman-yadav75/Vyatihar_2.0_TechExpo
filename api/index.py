@@ -47,15 +47,11 @@ app.permanent_session_lifetime = timedelta(days=7)
 
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os, json
 
-firebase_config = {
-    "type": "service_account",
-    "project_id": os.getenv("FIREBASE_PROJECT_ID"),
-    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
-    "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
-}
+service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT")
 
-cred = credentials.Certificate(firebase_config)
+cred = credentials.Certificate(json.loads(service_account_json))
 
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
