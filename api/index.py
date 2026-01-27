@@ -130,13 +130,13 @@ def add_announcement(message):
 
 
 
-# ==================================
-# 🔑 OpenAI API KEY
-# ==================================
-from openai import OpenAI
-import os
+# # ==================================
+# # 🔑 OpenAI API KEY
+# # ==================================
+# from openai import OpenAI
+# import os
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 # ==================================
